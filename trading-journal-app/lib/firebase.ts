@@ -20,5 +20,12 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 // Servicios de Firebase
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// Storage con configuración de timeout más largo
 export const storage = getStorage(app);
+
+// Configurar timeout más largo para uploads (5 minutos en lugar de 2)
+storage.maxUploadRetryTime = 300000; // 5 minutos en milisegundos
+storage.maxOperationRetryTime = 300000; // 5 minutos en milisegundos
+
 export default app;

@@ -13,15 +13,14 @@ export default function Navbar({ onLogout }: NavbarProps) {
   return (
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo - NO clickeable */}
-          <div className="flex items-center space-x-3">
+        <div className="flex justify-between items-center h-24">
+          {/* Logo - NO clickeable - MÁS GRANDE y SIN TEXTO */}
+          <div className="flex items-center">
             <img 
               src="/logo.png" 
               alt="KintEdge Logo" 
-              className="h-10 w-auto"
+              className="h-24 w-auto"
             />
-            <span className="text-xl font-bold text-gray-800">KintEdge</span>
           </div>
           
           <div className="flex items-center space-x-4">
