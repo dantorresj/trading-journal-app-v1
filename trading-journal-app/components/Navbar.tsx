@@ -14,11 +14,24 @@ export default function Navbar({ onLogout }: NavbarProps) {
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link href="/dashboard" className="text-xl font-bold text-primary-500">
-            📊 Trading Journal
-          </Link>
+          {/* Logo - NO clickeable */}
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/logo.png" 
+              alt="KintEdge Logo" 
+              className="h-10 w-auto"
+            />
+            <span className="text-xl font-bold text-gray-800">KintEdge</span>
+          </div>
           
           <div className="flex items-center space-x-4">
+            <Link
+              href="/dashboard"
+              className="text-gray-700 hover:text-primary-500 px-4 py-2 rounded-lg font-medium transition duration-200"
+            >
+              Dashboard
+            </Link>
+            
             <Link
               href="/new-trade"
               className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200"

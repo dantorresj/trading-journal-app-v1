@@ -60,8 +60,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-500 via-purple-600 to-secondary-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+        {/* Logo centrado arriba */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src="/logo.png" 
+            alt="KintEdge Logo" 
+            className="h-16 w-auto"
+          />
+        </div>
+        
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">📊 Trading Journal</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">KintEdge</h1>
           <p className="text-gray-600">
             {isLogin ? 'Bienvenido de vuelta' : 'Crea tu cuenta gratis'}
           </p>
