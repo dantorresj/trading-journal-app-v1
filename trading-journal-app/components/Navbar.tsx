@@ -25,13 +25,20 @@ return (
 
           
           <div className="flex items-center space-x-4">
+           <Link
+              href="/insights"
+              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+            >
+              💎 Insights
+            </Link>
+
             <Link
               href="/dashboard"
               className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
               Dashboard
             </Link>
-            
+
             <Link
               href="/new-trade"
               className="bg-gold-kint hover:bg-gold-dark text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 shadow-gold hover:shadow-gold-lg font-body"
