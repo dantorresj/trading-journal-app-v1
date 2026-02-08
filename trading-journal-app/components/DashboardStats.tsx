@@ -62,14 +62,14 @@ export default function DashboardStats({ trades }: DashboardStatsProps) {
   }, [trades]);
 
   const StatCard = ({ title, value, isPositive, isNegative }: any) => (
-    <div className="bg-white rounded-xl shadow-lg p-6 text-center">
-      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 text-center border border-silver">
+      <h3 className="text-xs font-semibold text-text-gray uppercase tracking-wide mb-2 font-body">
         {title}
       </h3>
-      <div className={`text-3xl font-bold ${
-        isPositive ? 'text-green-600' : 
-        isNegative ? 'text-red-600' : 
-        'text-gray-800'
+      <div className={`text-3xl font-bold font-mono ${
+        isPositive ? 'text-gold-kint' : 
+        isNegative ? 'text-lesson-red' : 
+        'text-carbon'
       }`}>
         {value}
       </div>

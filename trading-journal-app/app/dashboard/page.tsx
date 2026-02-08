@@ -16,12 +16,27 @@ export default function Dashboard() {
   const router = useRouter();
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
+  const [inspirationalPhrase, setInspirationalPhrase] = useState('');
+
+  const kintsugiPhrases = [
+    "Cada grieta es una oportunidad de oro",
+    "Las pérdidas no se ocultan, se transforman en sabiduría",
+    "Tu imperfección es tu camino único hacia la maestría",
+    "El oro más valioso está en las lecciones aprendidas",
+    "No hay trader perfecto, solo traders en evolución",
+    "Cada trade, ganador o perdedor, es parte de tu obra maestra",
+    "La belleza está en cómo reparas, no en nunca romperte"
+  ];
 
   useEffect(() => {
     if (!user) {
       router.push('/');
       return;
     }
+
+    // Seleccionar frase aleatoria
+    const randomPhrase = kintsugiPhrases[Math.floor(Math.random() * kintsugiPhrases.length)];
+    setInspirationalPhrase(randomPhrase);
 
     loadTrades();
   }, [user, router]);
@@ -54,37 +69,43 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-500 via-purple-600 to-secondary-500 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-xl">Cargando datos...</p>
+      <div className="min-h-screen bg-gradient-to-br from-silver via-white to-silver flex items-center justify-center">
+        <div className="text-carbon text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gold-kint mx-auto mb-4"></div>
+          <p className="text-xl font-heading">Cargando tu jornada...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-500 via-purple-600 to-secondary-500">
+    <div className="min-h-screen bg-gradient-to-br from-silver via-white to-silver">
       <Navbar onLogout={logout} />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="text-center text-white mb-8">
-          <h1 className="text-4xl font-bold mb-2">📊 Trading Dashboard</h1>
-          <p className="text-lg opacity-90">Análisis de rendimiento en tiempo real</p>
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-heading font-bold text-carbon mb-3">Tu Jornada Kintsugi</h1>
+          <p className="text-lg text-text-gray font-body italic mb-2">
+            "{inspirationalPhrase}"
+          </p>
+          <div className="w-32 h-1 bg-gradient-gold mx-auto rounded-full"></div>
         </div>
 
         {trades.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
-            <div className="text-6xl mb-4">📈</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              ¡Bienvenido a tu Trading Journal!
+          <div className="bg-white rounded-2xl shadow-xl p-12 text-center border border-silver">
+            <div className="text-6xl mb-4">🏺</div>
+            <h2 className="text-3xl font-heading font-bold text-carbon mb-3">
+              Tu Lienzo Está en Blanco
             </h2>
-            <p className="text-gray-600 mb-6">
-              Aún no tienes trades registrados. Comienza registrando tu primera operación.
+            <p className="text-text-gray mb-2 font-body max-w-md mx-auto">
+              Cada gran obra comienza con el primer trazo.
+            </p>
+            <p className="text-sm text-text-gray mb-6 font-body italic">
+              "Las grietas más hermosas comienzan con el primer paso"
             </p>
             <button
               onClick={() => router.push('/new-trade')}
-              className="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-3 rounded-lg transition duration-200"
+              className="bg-gold-kint hover:bg-gold-dark text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 shadow-gold hover:shadow-gold-lg font-body"
             >
               Registrar mi primer trade
             </button>

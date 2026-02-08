@@ -10,7 +10,7 @@ interface NavbarProps {
 export default function Navbar({ onLogout }: NavbarProps) {
   const { user } = useAuth();
 
-  return (
+return (
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-24">
@@ -19,52 +19,53 @@ export default function Navbar({ onLogout }: NavbarProps) {
             <img 
               src="/logo.png" 
               alt="KintEdge Logo" 
-              className="h-24 w-auto"
+              className="h-20 w-auto"
             />
           </div>
+
           
           <div className="flex items-center space-x-4">
             <Link
               href="/dashboard"
-              className="text-gray-700 hover:text-primary-500 px-4 py-2 rounded-lg font-medium transition duration-200"
+              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
               Dashboard
             </Link>
             
             <Link
               href="/new-trade"
-              className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200"
+              className="bg-gold-kint hover:bg-gold-dark text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 shadow-gold hover:shadow-gold-lg font-body"
             >
               + Nuevo Trade
             </Link>
             
             <Link
               href="/all-trades"
-              className="text-gray-700 hover:text-primary-500 px-4 py-2 rounded-lg font-medium transition duration-200"
+              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
               Todos los Trades
             </Link>
             
             <Link
               href="/reflexion"
-              className="text-gray-700 hover:text-primary-500 px-4 py-2 rounded-lg font-medium transition duration-200"
+              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
               Reflexión
             </Link>
             
-            <div className="border-l border-gray-300 h-8"></div>
+            <div className="border-l border-silver h-8"></div>
             
             <div className="flex items-center space-x-3">
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-700">
+                <p className="text-sm font-medium text-carbon font-body">
                   {user?.email?.split('@')[0]}
                 </p>
-                <p className="text-xs text-gray-500">Plan Free</p>
+                <p className="text-xs text-text-gray font-body">Plan Free</p>
               </div>
               
               <Link
                 href="/settings"
-                className="text-gray-600 hover:text-primary-500 px-3 py-2 rounded-lg transition duration-200"
+                className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
                 title="Configuración"
               >
                 ⚙️
@@ -72,7 +73,7 @@ export default function Navbar({ onLogout }: NavbarProps) {
               
               <button
                 onClick={onLogout}
-                className="text-gray-600 hover:text-red-600 px-3 py-2 rounded-lg transition duration-200"
+                className="text-text-gray hover:text-lesson-red px-3 py-2 rounded-lg transition-colors duration-300"
                 title="Cerrar sesión"
               >
                 🚪

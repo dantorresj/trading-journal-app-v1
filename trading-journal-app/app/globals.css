@@ -1,25 +1,66 @@
+/* Importar fuentes de Google */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Colores KintEdge - Filosofía Kintsugi */
+  --gold-kint: #D4AF37;
+  --gold-dark: #B8941F;
+  --carbon-edge: #3A3F46;
+  --white-pure: #FFFFFF;
+  --silver-reflection: #E8E8E8;
+  --lesson-red: #DC2626;
+  --growth-jade: #10B981;
+  --text-gray: #6B7280;
+  
+  /* Tipografía */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: var(--font-body);
+  color: var(--carbon-edge);
+  background-color: var(--white-pure);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--carbon-edge);
+}
+
+/* Números y métricas */
+.metric, .number, .stat-value {
+  font-family: var(--font-mono);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Utilidades Kintsugi */
+  .gradient-gold {
+    background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+  }
+  
+  .text-gold {
+    color: var(--gold-kint);
+  }
+  
+  .border-gold {
+    border-color: var(--gold-kint);
+  }
+  
+  .shadow-gold {
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.25);
+  }
+  
+  .shadow-gold-lg {
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
   }
 }
