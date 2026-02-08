@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Trade, Reflexion } from '@/types';
 import Navbar from '@/components/Navbar';
@@ -34,12 +34,11 @@ export default function InsightsPage() {
     if (!user) return;
 
     try {
-      // Cargar trades
+      // Cargar trades SIN orderBy (para evitar necesidad de índice)
       const tradesRef = collection(db, 'trades');
       const tradesQuery = query(
         tradesRef,
-        where('userId', '==', user.uid),
-        orderBy('fecha', 'desc')
+        where('userId', '==', user.uid)
       );
       const tradesSnapshot = await getDocs(tradesQuery);
       const tradesData: Trade[] = [];
@@ -47,13 +46,14 @@ export default function InsightsPage() {
         tradesData.push({ id: doc.id, ...doc.data() } as Trade);
       });
 
-      // Cargar reflexiones (últimas 10)
+      // Ordenar en cliente
+      tradesData.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+
+      // Cargar reflexiones SIN orderBy ni limit
       const reflexionesRef = collection(db, 'reflexiones');
       const reflexionesQuery = query(
         reflexionesRef,
-        where('userId', '==', user.uid),
-        orderBy('fecha', 'desc'),
-        limit(10)
+        where('userId', '==', user.uid)
       );
       const reflexionesSnapshot = await getDocs(reflexionesQuery);
       const reflexionesData: Reflexion[] = [];
@@ -61,10 +61,18 @@ export default function InsightsPage() {
         reflexionesData.push({ id: doc.id, ...doc.data() } as Reflexion);
       });
 
+      // Ordenar en cliente y tomar últimas 10
+      reflexionesData.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      const last10Reflexiones = reflexionesData.slice(0, 10);
+
       setTrades(tradesData);
-      setReflexiones(reflexionesData);
+      setReflexiones(last10Reflexiones);
+
+      console.log('Trades cargados:', tradesData.length);
+      console.log('Reflexiones cargadas:', last10Reflexiones.length);
     } catch (error) {
       console.error('Error loading data:', error);
+      alert('Error al cargar datos. Revisa la consola.');
     } finally {
       setLoading(false);
     }
@@ -81,10 +89,16 @@ export default function InsightsPage() {
         body: JSON.stringify({ trades })
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error ${response.status}: ${errorText}`);
+      }
+
       const data = await response.json();
       setTechnicalInsights(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing technical:', error);
+      alert('Error al analizar: ' + error.message);
     } finally {
       setAnalyzingTechnical(false);
     }
@@ -100,14 +114,20 @@ export default function InsightsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           reflexiones,
-          recentTrades: trades.slice(0, 10) // Últimos 10 trades
+          recentTrades: trades.slice(0, 10)
         })
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error ${response.status}: ${errorText}`);
+      }
+
       const data = await response.json();
       setEmotionalInsights(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing emotional:', error);
+      alert('Error al analizar: ' + error.message);
     } finally {
       setAnalyzingEmotional(false);
     }
@@ -148,6 +168,29 @@ export default function InsightsPage() {
           <div className="w-32 h-1 bg-gradient-gold mx-auto mt-4 rounded-full"></div>
         </div>
 
+        {/* Debug info - Mostrar cuántos datos hay */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-silver">
+          <h3 className="text-xl font-heading font-bold text-carbon mb-3">
+            📊 Tus Datos
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-gradient-to-r from-gold-50 to-white rounded-lg border-l-4 border-gold-kint">
+              <p className="text-sm text-text-gray font-body mb-1">Trades Registrados</p>
+              <p className="text-4xl font-mono font-bold text-gold-kint">{trades.length}</p>
+              <p className="text-xs text-text-gray font-body mt-2">
+                {trades.length < 10 ? `Necesitas ${10 - trades.length} más` : '✅ Suficientes para análisis'}
+              </p>
+            </div>
+            <div className="p-4 bg-gradient-to-r from-growth-50 to-white rounded-lg border-l-4 border-growth-jade">
+              <p className="text-sm text-text-gray font-body mb-1">Reflexiones Registradas</p>
+              <p className="text-4xl font-mono font-bold text-growth-jade">{reflexiones.length}</p>
+              <p className="text-xs text-text-gray font-body mt-2">
+                {reflexiones.length === 0 ? 'Necesitas escribir reflexiones' : '✅ Disponibles para análisis'}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Mensaje si no hay datos suficientes */}
         {trades.length < 10 && (
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-silver text-center">
@@ -160,47 +203,55 @@ export default function InsightsPage() {
               <br />
               Actualmente tienes: <strong className="text-gold-kint">{trades.length} trades</strong>
             </p>
+            <button
+              onClick={() => router.push('/new-trade')}
+              className="mt-6 bg-gold-kint hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 font-body"
+            >
+              Registrar más trades
+            </button>
           </div>
         )}
 
         {/* Sección: Análisis Técnico */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-3xl font-heading font-bold text-carbon mb-2">
-                📈 Análisis Técnico
-              </h2>
-              <p className="text-text-gray font-body">
-                Identifica patrones y optimiza tu estrategia
-              </p>
+        {trades.length >= 10 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-3xl font-heading font-bold text-carbon mb-2">
+                  📈 Análisis Técnico
+                </h2>
+                <p className="text-text-gray font-body">
+                  Identifica patrones y optimiza tu estrategia
+                </p>
+              </div>
+              <button
+                onClick={analyzeTechnical}
+                disabled={analyzingTechnical}
+                className="bg-gold-kint hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed font-body"
+              >
+                {analyzingTechnical ? (
+                  <span className="flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    <span>Analizando con IA...</span>
+                  </span>
+                ) : (
+                  '🧠 Analizar con IA'
+                )}
+              </button>
             </div>
-            <button
-              onClick={analyzeTechnical}
-              disabled={analyzingTechnical || trades.length < 10}
-              className="bg-gold-kint hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed font-body"
-            >
-              {analyzingTechnical ? (
-                <span className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                  <span>Analizando con IA...</span>
-                </span>
-              ) : (
-                '🧠 Analizar con IA'
-              )}
-            </button>
-          </div>
 
-          {technicalInsights ? (
-            <TechnicalAnalysis insights={technicalInsights} />
-          ) : (
-            <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
-              <div className="text-5xl mb-4">🤖</div>
-              <p className="text-text-gray font-body text-lg">
-                Haz clic en "Analizar con IA" para generar insights técnicos personalizados
-              </p>
-            </div>
-          )}
-        </div>
+            {technicalInsights ? (
+              <TechnicalAnalysis insights={technicalInsights} />
+            ) : (
+              <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
+                <div className="text-5xl mb-4">🤖</div>
+                <p className="text-text-gray font-body text-lg">
+                  Haz clic en "Analizar con IA" para generar insights técnicos personalizados
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Sección: Análisis Emocional */}
         <div>
