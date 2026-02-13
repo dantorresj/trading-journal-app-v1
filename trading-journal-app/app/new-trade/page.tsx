@@ -107,8 +107,6 @@ export default function NewTrade() {
   const [message, setMessage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  
-  // Configuraciones del usuario
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
 
@@ -129,7 +127,6 @@ export default function NewTrade() {
       if (settingsDoc.exists()) {
         setUserSettings(settingsDoc.data() as UserSettings);
       } else {
-        // Configuración por defecto si no existe
         const defaultSettings: UserSettings = {
           userId: user.uid,
           tradingType: 'Futuros',
@@ -156,7 +153,6 @@ export default function NewTrade() {
     }
   };
 
-  // Obtener labels dinámicos según tipo de trading
   const getFieldLabel = (baseLabel: string): string => {
     if (!userSettings) return baseLabel;
 
@@ -173,7 +169,6 @@ export default function NewTrade() {
     return baseLabel;
   };
 
-  // Obtener lista de activos según tipo de trading
   const getActivosList = (): string[] => {
     if (!userSettings) return ACTIVOS_POR_MERCADO.Futuros;
     return ACTIVOS_POR_MERCADO[userSettings.tradingType] || ACTIVOS_POR_MERCADO.Futuros;
@@ -293,6 +288,7 @@ export default function NewTrade() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Fecha y Activo */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Fecha *</label>
@@ -320,6 +316,7 @@ export default function NewTrade() {
               </div>
             </div>
 
+            {/* Setup y Dirección */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Setup *</label>
@@ -334,42 +331,42 @@ export default function NewTrade() {
                   ))}
                 </select>
               </div>
-              
-          </div>
-            <div className="grid md:grid-cols-2 gap-6">
-  <div>
-    <label className="block text-sm font-medium text-carbon mb-2 font-body">Dirección *</label>
-    <select
-      name="direccion"
-      required
-      className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
-    >
-      <option value="">Selecciona dirección</option>
-      <option value="Long">Long</option>
-      <option value="Short">Short</option>
-    </select>
-  </div>
 
-  <div>
-    <label className="block text-sm font-medium text-carbon mb-2 font-body">Temporalidad *</label>
-    <select
-      name="temporalidad"
-      required
-      className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
-    >
-      <option value="">Selecciona temporalidad</option>
-      <option value="1m">1 minuto</option>
-      <option value="5m">5 minutos</option>
-      <option value="15m">15 minutos</option>
-      <option value="30m">30 minutos</option>
-      <option value="1h">1 hora</option>
-      <option value="4h">4 horas</option>
-      <option value="1D">Diario</option>
-      <option value="Volumen">Vol</option>
-    </select>
-  </div>
-</div>
+              <div>
+                <label className="block text-sm font-medium text-carbon mb-2 font-body">Dirección *</label>
+                <select
+                  name="direccion"
+                  required
+                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                >
+                  <option value="">Selecciona dirección</option>
+                  <option value="Long">Long</option>
+                  <option value="Short">Short</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Temporalidad y Horario */}
             <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-carbon mb-2 font-body">Temporalidad *</label>
+                <select
+                  name="temporalidad"
+                  required
+                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                >
+                  <option value="">Selecciona temporalidad</option>
+                  <option value="1m">1 minuto</option>
+                  <option value="5m">5 minutos</option>
+                  <option value="15m">15 minutos</option>
+                  <option value="30m">30 minutos</option>
+                  <option value="1h">1 hora</option>
+                  <option value="4h">4 horas</option>
+                  <option value="1D">Diario</option>
+                  <option value="Volumen">Vol</option>
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Horario *</label>
                 <select
@@ -385,18 +382,20 @@ export default function NewTrade() {
                   <option value="After-hours">After-hours</option>
                 </select>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-carbon mb-2 font-body">Identificador de cuenta</label>
-                <input
-                  type="text"
-                  name="identificadorCuenta"
-                  placeholder="Ej: Demo-001, Real-Main, Prop-FTMO"
-                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
-                />
-              </div>
             </div>
 
+            {/* Identificador de cuenta */}
+            <div>
+              <label className="block text-sm font-medium text-carbon mb-2 font-body">Identificador de cuenta</label>
+              <input
+                type="text"
+                name="identificadorCuenta"
+                placeholder="Ej: Demo-001, Real-Main, Prop-FTMO"
+                className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+              />
+            </div>
+
+            {/* Horas de entrada y salida */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Hora de Entrada *</label>
@@ -404,6 +403,7 @@ export default function NewTrade() {
                   type="time"
                   name="hora_entrada"
                   required
+                  placeholder="09:30"
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
               </div>
@@ -414,11 +414,13 @@ export default function NewTrade() {
                   type="time"
                   name="hora_salida"
                   required
+                  placeholder="11:45"
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
               </div>
             </div>
 
+            {/* Contratos, Puntos y P&L */}
             <div className="grid md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">
@@ -430,6 +432,7 @@ export default function NewTrade() {
                   required
                   min="0"
                   step={userSettings?.tradingType === 'Futuros' ? '1' : '0.01'}
+                  placeholder={userSettings?.tradingType === 'Futuros' ? '2' : '0.5'}
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
               </div>
@@ -443,6 +446,7 @@ export default function NewTrade() {
                   name="puntos"
                   required
                   step={userSettings?.tradingType === 'Futuros' ? '1' : '0.0001'}
+                  placeholder={userSettings?.tradingType === 'Futuros' ? '15' : '25.5'}
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
               </div>
@@ -454,11 +458,13 @@ export default function NewTrade() {
                   name="ganancia_perdida"
                   required
                   step="0.01"
+                  placeholder="580.00"
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
               </div>
             </div>
 
+            {/* Resultado y Resultado Específico */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Resultado *</label>
@@ -492,16 +498,18 @@ export default function NewTrade() {
               </div>
             </div>
 
+            {/* Comentarios */}
             <div>
               <label className="block text-sm font-medium text-carbon mb-2 font-body">Comentarios</label>
               <textarea
                 name="comentarios"
                 rows={4}
-                placeholder="Notas, emociones, observaciones..."
+                placeholder="Ej: Me sentí confiado, esperé la confirmación en el balance. Respete mi stop loss."
                 className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
               />
             </div>
 
+            {/* Imagen */}
             <div>
               <label className="block text-sm font-medium text-carbon mb-2 font-body">
                 📷 Imagen del Setup (opcional)
@@ -533,6 +541,7 @@ export default function NewTrade() {
               )}
             </div>
 
+            {/* Botón Submit */}
             <button
               type="submit"
               disabled={loading}
