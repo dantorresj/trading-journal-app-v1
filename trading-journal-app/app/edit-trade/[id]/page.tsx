@@ -51,8 +51,8 @@ export default function EditTrade() {
       }
 
       setTrade(tradeData);
-      if (tradeData.imagen) {
-        setImagePreview(tradeData.imagen);
+      if (tradeData.imagenUrl) {
+        setImagePreview(tradeData.imagenUrl);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -91,13 +91,13 @@ export default function EditTrade() {
     try {
       const formData = new FormData(e.currentTarget);
       
-      let imageUrl = trade.imagen || '';
+      let imageUrl = trade.imagenUrl || '';
 
       // Manejar imagen
-      if (removeImage && trade.imagen) {
+      if (removeImage && trade.imagenUrl) {
         // Eliminar imagen anterior
         try {
-          const imageRef = ref(storage, trade.imagen);
+          const imageRef = ref(storage, trade.imagenUrl);
           await deleteObject(imageRef);
         } catch (err) {
           console.log('Error deleting old image:', err);
@@ -105,10 +105,10 @@ export default function EditTrade() {
         imageUrl = '';
       } else if (imageFile) {
         // Subir nueva imagen
-        if (trade.imagen) {
+        if (trade.imagenUrl) {
           // Eliminar imagen anterior
           try {
-            const imageRef = ref(storage, trade.imagen);
+            const imageRef = ref(storage, trade.imagenUrl);
             await deleteObject(imageRef);
           } catch (err) {
             console.log('Error deleting old image:', err);
@@ -425,7 +425,7 @@ export default function EditTrade() {
                   className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition"
                 >
                   <div className="text-4xl mb-2">📸</div>
-                  <div className="text-sm text-gray-600">Toca para {trade.imagen ? 'cambiar' : 'subir'} imagen</div>
+                  <div className="text-sm text-gray-600">Toca para {trade.imagenUrl ? 'cambiar' : 'subir'} imagen</div>
                 </div>
               )}
               
