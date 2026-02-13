@@ -260,14 +260,13 @@ export default function EditTrade() {
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option>1 minuto</option>
-                  <option>3 minutos</option>
-                  <option>5 minutos</option>
-                  <option>15 minutos</option>
-                  <option>30 minutos</option>
-                  <option>1 hora</option>
-                  <option>4 horas</option>
-                  <option>1 día</option>
+                 <option value="1m">1 minuto</option>
+                 <option value="5m">5 minutos</option>
+                 <option value="15m">15 minutos</option>
+                 <option value="30m">30 minutos</option>
+                 <option value="1h">1 hora</option>
+                 <option value="4h">4 horas</option>
+                 <option value="1D">Diario</option>
                 </select>
               </div>
             </div>

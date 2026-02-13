@@ -8,6 +8,7 @@ export interface Trade {
   identificadorCuenta?: string; // NUEVO: Identificador de la cuenta
   setup: string;
   direccion: string;
+  temporalidad: string;
   contratos: number;
   puntos: number;
   hora_entrada: string;

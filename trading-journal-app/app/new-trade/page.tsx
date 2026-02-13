@@ -219,6 +219,7 @@ export default function NewTrade() {
         activo: formData.get('activo') as string,
         setup: formData.get('setup') as string,
         direccion: formData.get('direccion') as string,
+        temporalidad: formData.get('temporalidad') as string,
         horario: formData.get('horario') as string,
         identificadorCuenta: formData.get('identificadorCuenta') as string,
         hora_entrada: formData.get('hora_entrada') as string,
@@ -347,7 +348,39 @@ export default function NewTrade() {
                 </select>
               </div>
             </div>
+            <div className="grid md:grid-cols-2 gap-6">
+  <div>
+    <label className="block text-sm font-medium text-carbon mb-2 font-body">Dirección *</label>
+    <select
+      name="direccion"
+      required
+      className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+    >
+      <option value="">Selecciona dirección</option>
+      <option value="Long">Long</option>
+      <option value="Short">Short</option>
+    </select>
+  </div>
 
+  <div>
+    <label className="block text-sm font-medium text-carbon mb-2 font-body">Temporalidad *</label>
+    <select
+      name="temporalidad"
+      required
+      className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+    >
+      <option value="">Selecciona temporalidad</option>
+      <option value="1m">1 minuto</option>
+      <option value="5m">5 minutos</option>
+      <option value="15m">15 minutos</option>
+      <option value="30m">30 minutos</option>
+      <option value="1h">1 hora</option>
+      <option value="4h">4 horas</option>
+      <option value="1D">Diario</option>
+      <option value="Volumen">Vol</option>
+    </select>
+  </div>
+</div>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-carbon mb-2 font-body">Horario *</label>
