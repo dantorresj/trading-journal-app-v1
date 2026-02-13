@@ -227,7 +227,7 @@ export default function NewTrade() {
         contratos: parseInt(formData.get('contratos') as string),
         puntos: parseFloat(formData.get('puntos') as string),
         ganancia_perdida: parseFloat(formData.get('ganancia_perdida') as string),
-        resultado: formData.get('resultado') as string,
+        resultado: formData.get('resultado') as 'Won' | 'Lose' | 'BE',
         resultado_especifico: formData.get('resultado_especifico') as string,
         comentarios: formData.get('comentarios') as string,
         imageUrl: imageUrl,
