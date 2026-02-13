@@ -331,10 +331,10 @@ export default function AllTradesPage() {
                       </div>
                     )}
 
-                    {trade.imagen && (
+                    {trade.imageUrl && (
                       <div className="mt-3">
                         <img 
-                          src={trade.imagen} 
+                          src={trade.imageUrl} 
                           alt="Trade screenshot" 
                           className="rounded-lg max-h-48 cursor-pointer hover:opacity-90"
                           onClick={() => window.open(trade.imagen, '_blank')}
