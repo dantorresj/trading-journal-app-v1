@@ -334,20 +334,8 @@ export default function NewTrade() {
                   ))}
                 </select>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-carbon mb-2 font-body">Dirección *</label>
-                <select
-                  name="direccion"
-                  required
-                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
-                >
-                  <option value="">Selecciona dirección</option>
-                  <option value="Long">Long</option>
-                  <option value="Short">Short</option>
-                </select>
-              </div>
-            </div>
+              
+          </div>
             <div className="grid md:grid-cols-2 gap-6">
   <div>
     <label className="block text-sm font-medium text-carbon mb-2 font-body">Dirección *</label>
