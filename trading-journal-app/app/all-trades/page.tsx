@@ -337,7 +337,7 @@ export default function AllTradesPage() {
                           src={trade.imageUrl} 
                           alt="Trade screenshot" 
                           className="rounded-lg max-h-48 cursor-pointer hover:opacity-90"
-                          onClick={() => window.open(trade.imagen, '_blank')}
+                          onClick={() => window.open(trade.imageUrl, '_blank')}
                         />
                       </div>
                     )}
