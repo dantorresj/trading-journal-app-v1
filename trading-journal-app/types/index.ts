@@ -5,11 +5,10 @@ export interface Trade {
   fecha: string;
   activo: string;
   horario: string;
+  identificadorCuenta?: string; // NUEVO: Identificador de la cuenta
   setup: string;
-  tendencia: string;
-  temporalidad: string;
+  direccion: string;
   contratos: number;
-  direccion: 'compra' | 'venta';
   puntos: number;
   hora_entrada: string;
   hora_salida: string;
@@ -17,7 +16,7 @@ export interface Trade {
   resultado_especifico: string;
   ganancia_perdida: number;
   comentarios?: string;
-  imagen?: string; // URL de la imagen en Firebase Storage
+  imageUrl?: string; // URL de la imagen en Firebase Storage
   createdAt: Date;
 }
 
@@ -48,7 +47,7 @@ export interface UserProfile {
   plan: 'free' | 'premium';
 }
 
-// NUEVO: Configuraciones personalizables del usuario
+// Configuraciones personalizables del usuario
 export interface UserSettings {
   id?: string;
   userId: string;
