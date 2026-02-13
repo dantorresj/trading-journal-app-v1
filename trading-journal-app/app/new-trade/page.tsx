@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { collection, addDoc } from 'firebase/firestore';
@@ -109,6 +109,7 @@ export default function NewTrade() {
   const [imagePreview, setImagePreview] = useState<string>('');
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!user) {
@@ -232,8 +233,11 @@ export default function NewTrade() {
       await addDoc(collection(db, 'trades'), tradeData);
 
       setMessage('✅ Trade guardado exitosamente!');
-      e.currentTarget.reset();
-      removeImage();
+      if (formRef.current) {
+  formRef.current.reset();
+}
+
+removeImage();
       
       setTimeout(() => {
         setMessage('');
@@ -287,7 +291,7 @@ export default function NewTrade() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
             {/* Fecha y Activo */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
