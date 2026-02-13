@@ -124,7 +124,6 @@ export default function EditTrade() {
         activo: formData.get('activo') as string,
         horario: formData.get('horario') as string,
         setup: formData.get('setup') as string,
-        tendencia: formData.get('tendencia') as string,
         temporalidad: formData.get('temporalidad') as string,
         contratos: parseInt(formData.get('contratos') as string) || 1,
         direccion: formData.get('direccion') as 'compra' | 'venta',
@@ -252,18 +251,6 @@ export default function EditTrade() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tendencia</label>
-                <select
-                  name="tendencia"
-                  defaultValue={trade.tendencia}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option>Corrección</option>
-                  <option>Continuación de tendencia</option>
-                </select>
-              </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Temporalidad</label>
