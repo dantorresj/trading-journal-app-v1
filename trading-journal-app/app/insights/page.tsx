@@ -153,7 +153,7 @@ export default function InsightsPage() {
         <div className="text-center mb-12">
           <div className="mb-6">
             <div className="inline-block p-4 bg-white rounded-full shadow-lg border-2 border-gold-kint">
-              <span className="text-6xl">🏺</span>
+              <img src="/icons/icon-kintsugi.png" alt="Kintsugi" className="w-14 h-14" />
             </div>
           </div>
           <h1 className="text-5xl font-heading font-bold text-carbon mb-4">
@@ -170,8 +170,9 @@ export default function InsightsPage() {
 
         {/* Debug info - Mostrar cuántos datos hay */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-silver">
-          <h3 className="text-xl font-heading font-bold text-carbon mb-3">
-            📊 Tus Datos
+          <h3 className="flex items-center space-x-2 text-xl font-heading font-bold text-carbon mb-3">
+           <img src="/icons/icon-chart.png" alt="Datos" className="w-16 h-16" />
+           <span>Tus Datos</span>
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-4 bg-gradient-to-r from-gold-50 to-white rounded-lg border-l-4 border-gold-kint">
@@ -194,7 +195,7 @@ export default function InsightsPage() {
         {/* Mensaje si no hay datos suficientes */}
         {trades.length < 10 && (
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-silver text-center">
-            <div className="text-5xl mb-4">📊</div>
+            <div className="text-5xl mb-4"></div>
             <h3 className="text-2xl font-heading font-bold text-carbon mb-3">
               Necesitas más datos
             </h3>
@@ -217,8 +218,9 @@ export default function InsightsPage() {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-3xl font-heading font-bold text-carbon mb-2">
-                  📈 Análisis Técnico
+                <h2 className="flex items-center space-x-3 text-3xl font-heading font-bold text-carbon mb-2">
+                 <img src="/icons/icon-new-trade.png" alt="Análisis Técnico" className="w-16 h-16" />
+                 <span>Análisis Técnico</span>
                 </h2>
                 <p className="text-text-gray font-body">
                   Identifica patrones y optimiza tu estrategia
@@ -235,7 +237,7 @@ export default function InsightsPage() {
                     <span>Analizando con IA...</span>
                   </span>
                 ) : (
-                  '🧠 Analizar con IA'
+                  'Analizar con IA'
                 )}
               </button>
             </div>
@@ -244,7 +246,7 @@ export default function InsightsPage() {
               <TechnicalAnalysis insights={technicalInsights} />
             ) : (
               <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
-                <div className="text-5xl mb-4">🤖</div>
+                <img src="/icons/icon-robot.png" alt="IA" className="w-16 h-16 mx-auto mb-4" />
                 <p className="text-text-gray font-body text-lg">
                   Haz clic en "Analizar con IA" para generar insights técnicos personalizados
                 </p>
@@ -257,8 +259,9 @@ export default function InsightsPage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-3xl font-heading font-bold text-carbon mb-2">
-                🧠 Análisis Emocional
+              <h2 className="flex items-center space-x-3 text-3xl font-heading font-bold text-carbon mb-2">
+               <img src="/icons/icon-emotion.png" alt="Análisis Emocional" className="w-16 h-16" />
+               <span>Análisis Emocional</span>
               </h2>
               <p className="text-text-gray font-body">
                 Comprende tu psicología y fortalece tu disciplina
@@ -275,7 +278,7 @@ export default function InsightsPage() {
                   <span>Analizando con IA...</span>
                 </span>
               ) : (
-                '💭 Analizar Reflexiones'
+                'Analizar Reflexiones'
               )}
             </button>
           </div>
@@ -287,7 +290,7 @@ export default function InsightsPage() {
             </>
           ) : reflexiones.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
-              <div className="text-5xl mb-4">📝</div>
+              <div className="text-5xl mb-4"></div>
               <h3 className="text-2xl font-heading font-bold text-carbon mb-3">
                 No tienes reflexiones registradas
               </h3>
@@ -303,7 +306,7 @@ export default function InsightsPage() {
             </div>
           ) : (
             <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
-              <div className="text-5xl mb-4">🤖</div>
+              <img src="/icons/icon-robot.png" alt="IA" className="w-16 h-16 mx-auto mb-4" />
               <p className="text-text-gray font-body text-lg">
                 Haz clic en "Analizar Reflexiones" para generar insights emocionales
               </p>
@@ -313,7 +316,7 @@ export default function InsightsPage() {
 
         {/* Filosofía Kintsugi al final */}
         <div className="mt-12 bg-gradient-to-br from-gold-kint to-gold-dark rounded-2xl shadow-xl p-8 text-white text-center">
-          <div className="text-5xl mb-4">✨</div>
+          <div className="text-5xl mb-4"></div>
           <h3 className="text-3xl font-heading font-bold mb-3">
             La Belleza del Kintsugi
           </h3>
