@@ -177,11 +177,11 @@ export default function AllTradesPage() {
             </div>
             
             <button
-              onClick={exportToCSV}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-200 flex items-center space-x-2"
+             onClick={exportToCSV}
+              className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-200 font-semibold"
             >
-              <span>📊</span>
-              <span>Exportar CSV</span>
+             <img src="/icons/icon-export.png" alt="Exportar" className="w-10 h-10" />
+             <span>Exportar CSV</span>
             </button>
           </div>
 
@@ -345,19 +345,21 @@ export default function AllTradesPage() {
 
                   <div className="flex md:flex-col space-x-2 md:space-x-0 md:space-y-2 mt-4 md:mt-0 md:ml-4">
                     <button
-                      onClick={() => router.push(`/edit-trade/${trade.id}`)}
-                      className="flex-1 md:w-auto bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200"
+                     onClick={() => router.push(`/edit-trade/${trade.id}`)}
+                     className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200"
                     >
-                      ✏️ Editar
+                     <img src="/icons/icon-edit.png" alt="Editar" className="w-8 h-8" />
+                     <span>Editar</span>
                     </button>
                     <button
-                      onClick={() => {
-                        setSelectedTrade(trade);
-                        setShowDeleteModal(true);
-                      }}
-                      className="flex-1 md:w-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200"
+                     onClick={() => {
+                      setSelectedTrade(trade);
+                      setShowDeleteModal(true);
+                    }}
+                     className="flex-1 md:w-auto flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition duration-200"
                     >
-                      🗑️ Eliminar
+                     <img src="/icons/icon-delete.png" alt="Eliminar" className="w-8 h-8" />
+                     <span>Eliminar</span>
                     </button>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ interface NavbarProps {
 export default function Navbar({ onLogout }: NavbarProps) {
   const { user } = useAuth();
 
-return (
+  return (
     <nav className="bg-white shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-24">
@@ -22,14 +22,14 @@ return (
               className="h-20 w-auto"
             />
           </div>
-
           
           <div className="flex items-center space-x-4">
-           <Link
+            <Link
               href="/insights"
-              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
-              💎 Insights
+              <img src="/icons/icon-insights.png" alt="Insights" className="w-16 h-16" />
+              <span>Insights</span>
             </Link>
 
             <Link
@@ -55,9 +55,10 @@ return (
             
             <Link
               href="/reflexion"
-              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
             >
-              Reflexión
+              <img src="/icons/icon-reflection.png" alt="Reflexión" className="w-14 h-14" />
+              <span>Reflexión</span>
             </Link>
             
             <div className="border-l border-silver h-8"></div>
@@ -75,7 +76,7 @@ return (
                 className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
                 title="Configuración"
               >
-                ⚙️
+                <img src="/icons/icon-settings.png" alt="Settings" className="w-8 h-8" />
               </Link>
               
               <button

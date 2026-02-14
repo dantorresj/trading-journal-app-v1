@@ -44,7 +44,7 @@ export default function EmotionalAnalysis({ insights }: EmotionalAnalysisProps) 
       {/* Patrón Emocional */}
       <div className="bg-white rounded-2xl shadow-lg p-8 border border-silver">
         <div className="flex items-start space-x-4">
-          <div className="text-5xl">🔍</div>
+          <img src="/icons/icon-emotion.png" alt="Patrón Emocional" className="w-12 h-12 mt-2" />
           <div className="flex-1">
             <h3 className="text-2xl font-heading font-bold text-carbon mb-4">
               Patrón Emocional Detectado

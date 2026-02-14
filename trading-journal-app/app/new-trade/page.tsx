@@ -271,9 +271,10 @@ removeImage();
       
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-silver">
-          <h1 className="text-3xl font-heading font-bold text-carbon mb-2 text-center">
-            📈 Nuevo Trade
-          </h1>
+        <h1 className="flex items-center justify-center space-x-3 text-3xl font-heading font-bold text-carbon mb-2">
+          <img src="/icons/icon-new-trade.png" alt="Nuevo Trade" className="w-16 h-16" />
+          <span>Nuevo Trade</span>
+         </h1>
           <p className="text-text-gray text-center mb-6 font-body">
             Registra tu operación con precisión
           </p>

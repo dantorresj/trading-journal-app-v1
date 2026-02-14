@@ -32,7 +32,7 @@ export default function TechnicalAnalysis({ insights }: TechnicalAnalysisProps) 
       {/* Mejor Horario */}
       <div className="bg-white rounded-2xl shadow-lg p-8 border border-silver">
         <div className="flex items-start space-x-4">
-          <div className="text-5xl">⏰</div>
+          <img src="/icons/icon-chart.png" alt="Horario" className="w-12 h-12 mt-2" />
           <div className="flex-1">
             <h3 className="text-2xl font-heading font-bold text-carbon mb-2">
               Mejor Momento para Operar
@@ -75,7 +75,7 @@ export default function TechnicalAnalysis({ insights }: TechnicalAnalysisProps) 
       {/* Setup Óptimo */}
       <div className="bg-white rounded-2xl shadow-lg p-8 border border-silver">
         <div className="flex items-start space-x-4">
-          <div className="text-5xl">🎯</div>
+          <img src="/icons/icon-chart.png" alt="Setup" className="w-12 h-12 mt-2" />
           <div className="flex-1">
             <h3 className="text-2xl font-heading font-bold text-carbon mb-2">
               Setup Más Rentable
@@ -118,7 +118,7 @@ export default function TechnicalAnalysis({ insights }: TechnicalAnalysisProps) 
       {/* Patrón Detectado */}
       <div className="bg-gradient-to-br from-gold-kint to-gold-dark rounded-2xl shadow-xl p-8 text-white">
         <div className="flex items-start space-x-4">
-          <div className="text-5xl">💎</div>
+          <img src="/icons/icon-robot.png" alt="IA" className="w-12 h-12 mt-2" />
           <div className="flex-1">
             <h3 className="text-2xl font-heading font-bold mb-2">
               Patrón Detectado por IA
