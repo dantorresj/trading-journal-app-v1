@@ -154,7 +154,6 @@ export default function InsightsPage() {
           <div className="mb-6">
             <img src="/icons/icon-kintsugi.png" alt="Kintsugi" className="w-20 h-20" />
           </div>
-          </div>
           <h1 className="text-5xl font-heading font-bold text-carbon mb-4">
             Insights KintEdge
           </h1>
