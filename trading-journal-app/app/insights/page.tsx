@@ -152,7 +152,7 @@ export default function InsightsPage() {
         {/* Header con filosofía Kintsugi */}
         <div className="text-center mb-12">
           <div className="mb-6">
-            <img src="/icons/icon-kintsugi.png" alt="Kintsugi" className="w-20 h-20" />
+            <img src="/icons/icon-kintsugi.png" alt="Kintsugi" className="w-20 h-20 mx-auto" />
           </div>
           <h1 className="text-5xl font-heading font-bold text-carbon mb-4">
             Insights KintEdge
