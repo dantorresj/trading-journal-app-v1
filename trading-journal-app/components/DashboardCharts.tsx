@@ -37,11 +37,20 @@ interface DashboardChartsProps {
 export default function DashboardCharts({ trades }: DashboardChartsProps) {
   // Curva de Equity
   const equityData = useMemo(() => {
-    const sortedTrades = [...trades].sort((a, b) => {
-    const dateTimeA = new Date(`${a.fecha}T${a.hora_entrada || '00:00'}`).getTime();
-    const dateTimeB = new Date(`${b.fecha}T${b.hora_entrada || '00:00'}`).getTime();
-    return dateTimeA - dateTimeB;
-  });
+   const sortedTrades = [...trades].sort((a, b) => {
+  // Primero comparar por fecha + hora de entrada
+  const entradaA = new Date(`${a.fecha}T${a.hora_entrada || '00:00'}`).getTime();
+  const entradaB = new Date(`${b.fecha}T${b.hora_entrada || '00:00'}`).getTime();
+  
+  if (entradaA !== entradaB) {
+    return entradaA - entradaB;
+  }
+  
+  // Si tienen la misma hora de entrada, ordenar por hora de salida
+  const salidaA = new Date(`${a.fecha}T${a.hora_salida || '23:59'}`).getTime();
+  const salidaB = new Date(`${b.fecha}T${b.hora_salida || '23:59'}`).getTime();
+  return salidaA - salidaB;
+});
     let cumulative = 0;
     const data = trades.map((trade, i) => {
       cumulative += trade.ganancia_perdida;
