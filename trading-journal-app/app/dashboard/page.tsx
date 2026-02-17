@@ -59,7 +59,14 @@ export default function Dashboard() {
         tradesData.push({ id: doc.id, ...doc.data() } as Trade);
       });
       
-      setTrades(tradesData);
+          tradesData.sort((a, b) => {
+      // Crear fecha/hora completa para comparar
+      const dateTimeA = new Date(`${a.fecha}T${a.hora_entrada || '00:00'}`).getTime();
+      const dateTimeB = new Date(`${b.fecha}T${b.hora_entrada || '00:00'}`).getTime();
+      return dateTimeA - dateTimeB;  // Orden cronológico ascendente
+    });
+    
+    setTrades(tradesData);
     } catch (error) {
       console.error('Error loading trades:', error);
     } finally {
