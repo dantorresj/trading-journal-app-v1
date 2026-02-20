@@ -124,10 +124,18 @@ export default function DashboardTables({ trades }: DashboardTablesProps) {
       .sort((a, b) => b.month.localeCompare(a.month));
   }, [trades]);
 
-  // Últimos 10 trades
+  // Últimos 10 trades — ordenados por timestamp real de registro (createdAt)
   const lastTrades = useMemo(() => {
     return [...trades]
-      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+      .sort((a, b) => {
+        const tsA = (a.createdAt as any)?.seconds
+          ? (a.createdAt as any).seconds * 1000
+          : new Date(a.createdAt).getTime();
+        const tsB = (b.createdAt as any)?.seconds
+          ? (b.createdAt as any).seconds * 1000
+          : new Date(b.createdAt).getTime();
+        return tsB - tsA; // descendente: el más recientemente registrado arriba
+      })
       .slice(0, 10);
   }, [trades]);
 
