@@ -137,6 +137,53 @@ export default function DashboardCharts({ trades }: DashboardChartsProps) {
     };
   }, [trades]);
 
+  // Performance por Setup (Win Rate %)
+  const setupWinRateData = useMemo(() => {
+    const setupStats: { [key: string]: { wins: number; total: number } } = {};
+    trades.forEach(trade => {
+      const setup = trade.setup || 'Sin Setup';
+      if (!setupStats[setup]) setupStats[setup] = { wins: 0, total: 0 };
+      setupStats[setup].total += 1;
+      if (trade.resultado === 'Won') setupStats[setup].wins += 1;
+    });
+
+    const labels = Object.keys(setupStats);
+    const winRates = labels.map(s => Math.round((setupStats[s].wins / setupStats[s].total) * 100));
+
+    return {
+      labels,
+      datasets: [{
+        label: 'Win Rate %',
+        data: winRates,
+        backgroundColor: '#6b8cff',
+        borderRadius: 6
+      }]
+    };
+  }, [trades]);
+
+  // Performance por Setup (USD)
+  const setupUSDData = useMemo(() => {
+    const setupPL: { [key: string]: number } = {};
+    trades.forEach(trade => {
+      const setup = trade.setup || 'Sin Setup';
+      setupPL[setup] = (setupPL[setup] || 0) + trade.ganancia_perdida;
+    });
+
+    const labels = Object.keys(setupPL);
+    const values = labels.map(s => setupPL[s]);
+    const colors = values.map(v => v >= 0 ? '#10b981' : '#ef4444');
+
+    return {
+      labels,
+      datasets: [{
+        label: 'P&L USD',
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 6
+      }]
+    };
+  }, [trades]);
+
   // Win/Loss Distribution
   const winLossData = useMemo(() => {
     const wins = trades.filter(t => t.resultado === 'Won').length;
@@ -192,6 +239,40 @@ export default function DashboardCharts({ trades }: DashboardChartsProps) {
 
         <ChartCard title="Win/Loss Distribution">
           <Pie data={winLossData} options={{ responsive: true, maintainAspectRatio: false }} />
+        </ChartCard>
+
+        <ChartCard title="Performance por Setup (Win Rate %)">
+          <Bar
+            data={setupWinRateData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: true } },
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100,
+                  ticks: { callback: (v: any) => `${v}%` }
+                }
+              }
+            }}
+          />
+        </ChartCard>
+
+        <ChartCard title="Performance por Setup (USD)">
+          <Bar
+            data={setupUSDData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: true } },
+              scales: {
+                y: {
+                  ticks: { callback: (v: any) => `$${v}` }
+                }
+              }
+            }}
+          />
         </ChartCard>
       </div>
     </div>

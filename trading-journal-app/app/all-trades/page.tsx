@@ -43,8 +43,7 @@ export default function AllTradesPage() {
       const tradesRef = collection(db, 'trades');
       const q = query(
         tradesRef,
-        where('userId', '==', user.uid),
-        orderBy('fecha', 'desc')
+        where('userId', '==', user.uid)
       );
       
       const querySnapshot = await getDocs(q);
@@ -52,6 +51,18 @@ export default function AllTradesPage() {
       
       querySnapshot.forEach((doc) => {
         tradesData.push({ id: doc.id, ...doc.data() } as Trade);
+      });
+
+      // Ordenar por createdAt real (Firestore Timestamp o Date)
+      // Garantiza el orden exacto de registro sin depender de fecha/hora de entrada
+      tradesData.sort((a, b) => {
+        const tsA = (a.createdAt as any)?.seconds
+          ? (a.createdAt as any).seconds * 1000
+          : new Date(a.createdAt).getTime();
+        const tsB = (b.createdAt as any)?.seconds
+          ? (b.createdAt as any).seconds * 1000
+          : new Date(b.createdAt).getTime();
+        return tsB - tsA; // descendente: el más reciente primero
       });
       
       setTrades(tradesData);

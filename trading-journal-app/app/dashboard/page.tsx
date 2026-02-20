@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Trade } from '@/types';
 import DashboardStats from '@/components/DashboardStats';
@@ -34,7 +34,6 @@ export default function Dashboard() {
       return;
     }
 
-    // Seleccionar frase aleatoria
     const randomPhrase = kintsugiPhrases[Math.floor(Math.random() * kintsugiPhrases.length)];
     setInspirationalPhrase(randomPhrase);
 
@@ -48,8 +47,7 @@ export default function Dashboard() {
       const tradesRef = collection(db, 'trades');
       const q = query(
         tradesRef,
-        where('userId', '==', user.uid),
-        orderBy('fecha', 'asc')
+        where('userId', '==', user.uid)
       );
       
       const querySnapshot = await getDocs(q);
@@ -59,18 +57,16 @@ export default function Dashboard() {
         tradesData.push({ id: doc.id, ...doc.data() } as Trade);
       });
       
-      // Ordenar por fecha + hora de entrada, luego por hora de salida
+      // Ordenar por createdAt real (Firestore Timestamp o Date)
+      // Garantiza el orden exacto de registro sin depender de fecha/hora de entrada
       tradesData.sort((a, b) => {
-        const entradaA = new Date(`${a.fecha}T${a.hora_entrada || '00:00'}`).getTime();
-        const entradaB = new Date(`${b.fecha}T${b.hora_entrada || '00:00'}`).getTime();
-        
-        if (entradaA !== entradaB) {
-          return entradaA - entradaB;
-        }
-        
-        const salidaA = new Date(`${a.fecha}T${a.hora_salida || '23:59'}`).getTime();
-        const salidaB = new Date(`${b.fecha}T${b.hora_salida || '23:59'}`).getTime();
-        return salidaA - salidaB;
+        const tsA = (a.createdAt as any)?.seconds
+          ? (a.createdAt as any).seconds * 1000
+          : new Date(a.createdAt).getTime();
+        const tsB = (b.createdAt as any)?.seconds
+          ? (b.createdAt as any).seconds * 1000
+          : new Date(b.createdAt).getTime();
+        return tsA - tsB; // ascendente para equity curve y gráficas cronológicas
       });
       
       setTrades(tradesData);
