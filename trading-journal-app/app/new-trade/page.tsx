@@ -9,6 +9,10 @@ import { db, storage } from '@/lib/firebase';
 import { Trade, UserSettings } from '@/types';
 import Navbar from '@/components/Navbar';
 import { doc, getDoc } from 'firebase/firestore';
+import { addXP, updateStreak, checkBadgeRequirement, awardBadge, checkPlanLimit } from '@/lib/gamification';
+import { XP_REWARDS } from '@/types';
+import Celebration from '@/components/Celebration';
+import UpgradeModal from '@/components/UpgradeModal';
 
 // Listas de activos por tipo de mercado
 const ACTIVOS_POR_MERCADO = {
@@ -110,6 +114,14 @@ export default function NewTrade() {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
   const formRef = useRef<HTMLFormElement>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState({
+  xpGained: 0,
+  levelUp: false,
+  newLevel: undefined as any,
+  badgeUnlocked: undefined as any
+});
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -193,21 +205,29 @@ export default function NewTrade() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!user) return;
+  e.preventDefault();
+  if (!user) return;
 
-    setLoading(true);
-    setMessage('');
+  setLoading(true);        // ← MOVER AQUÍ
+  setMessage('');          // ← MOVER AQUÍ
 
-    try {
-      const formData = new FormData(e.currentTarget);
-      
-      let imageUrl = '';
-      if (imageFile) {
-        const storageRef = ref(storage, `trades/${user.uid}/${Date.now()}_${imageFile.name}`);
-        await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(storageRef);
-      }
+   const formData = new FormData(e.currentTarget);
+
+  try {
+    const limitCheck = await checkPlanLimit(user.uid, 'trades');
+    
+    if (!limitCheck.withinLimit) {
+      setShowUpgradeModal(true);
+      setLoading(false);   // ← AGREGAR ESTO
+      return;
+    }
+    
+    let imageUrl = '';
+    if (imageFile) {
+      const storageRef = ref(storage, `trades/${user.uid}/${Date.now()}_${imageFile.name}`);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
 
       const tradeData: Omit<Trade, 'id'> = {
         userId: user.uid,
@@ -232,7 +252,48 @@ export default function NewTrade() {
 
       await addDoc(collection(db, 'trades'), tradeData);
 
-      setMessage('✅ Trade guardado exitosamente!');
+// GAMIFICACIÓN
+let xpGained = XP_REWARDS.TRADE_REGISTERED;
+let badgeUnlocked = undefined;
+
+// XP bonus por trade ganador
+if (tradeData.resultado === 'Won') {
+  xpGained += XP_REWARDS.WINNING_TRADE;
+}
+
+// Actualizar racha
+const newStreak = await updateStreak(user.uid, tradeData.fecha);
+
+// Bonus por racha
+if (newStreak % 3 === 0 && newStreak > 0) {
+  xpGained += XP_REWARDS.STREAK_BONUS;
+}
+
+// Agregar XP
+const xpResult = await addXP(user.uid, xpGained);
+
+// Verificar badges
+const firstWinCheck = await checkBadgeRequirement(user.uid, 'first_win', {
+  winningTrades: tradeData.resultado === 'Won' ? 1 : 0
+});
+
+if (firstWinCheck) {
+  const awarded = await awardBadge(user.uid, 'first_win');
+  if (awarded) {
+    badgeUnlocked = { id: 'first_win', name: 'Primera Victoria', icon: '🏆' };
+  }
+}
+
+// Mostrar celebración
+setCelebrationData({
+  xpGained,
+  levelUp: xpResult.levelUp,
+  newLevel: xpResult.newLevel,
+  badgeUnlocked
+});
+setShowCelebration(true);
+
+setMessage('✅ Trade guardado exitosamente!');
       if (formRef.current) {
   formRef.current.reset();
 }
@@ -557,6 +618,23 @@ removeImage();
           </form>
         </div>
       </div>
+
+      <Celebration
+  show={showCelebration}
+  xpGained={celebrationData.xpGained}
+  levelUp={celebrationData.levelUp}
+  newLevel={celebrationData.newLevel}
+  badgeUnlocked={celebrationData.badgeUnlocked}
+  onClose={() => setShowCelebration(false)}
+/>
+
+<UpgradeModal
+  show={showUpgradeModal}
+  onClose={() => setShowUpgradeModal(false)}
+  limitType="trades"
+  currentCount={20}
+  limit={20}
+/>
     </div>
   );
 }

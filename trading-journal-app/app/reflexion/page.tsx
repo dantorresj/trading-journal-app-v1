@@ -7,6 +7,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Reflexion } from '@/types';
 import Navbar from '@/components/Navbar';
+import { addXP, checkPlanLimit } from '@/lib/gamification';
+import { XP_REWARDS } from '@/types';
+import Celebration from '@/components/Celebration';
+import UpgradeModal from '@/components/UpgradeModal';
 
 export default function ReflexionPage() {
   const { user, logout } = useAuth();
@@ -14,22 +18,36 @@ export default function ReflexionPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState({
+    xpGained: 0,
+    levelUp: false,
+    newLevel: undefined as any,
+    badgeUnlocked: undefined as any
+  });
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     if (!user) {
       router.push('/');
     }
   }, [user, router]);
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!user) return;
-
+  
+  const formData = new FormData(e.currentTarget);
+  const limitCheck = await checkPlanLimit(user.uid, 'reflexiones');
+  
+  if (!limitCheck.withinLimit) {
+    setShowUpgradeModal(true);
+    return;
+  }
     setLoading(true);
     setMessage('');
 
     try {
-      const formData = new FormData(e.currentTarget);
 
       const reflexionData: Omit<Reflexion, 'id'> = {
         userId: user.uid,
@@ -49,9 +67,23 @@ export default function ReflexionPage() {
 
       await addDoc(collection(db, 'reflexiones'), reflexionData);
 
+      // ← AGREGAR GAMIFICACIÓN AQUÍ ↓
+      // Agregar XP por reflexión
+      const xpGained = XP_REWARDS.REFLEXION_WRITTEN;
+      const xpResult = await addXP(user.uid, xpGained);
+
+      // Mostrar celebración
+      setCelebrationData({
+        xpGained,
+        levelUp: xpResult.levelUp,
+        newLevel: xpResult.newLevel,
+        badgeUnlocked: undefined
+      });
+      setShowCelebration(true);
+      // ← HASTA AQUÍ ↑
+
       setMessage('✅ Reflexión guardada exitosamente!');
       
-      // Resetear formulario usando ref
       if (formRef.current) {
         formRef.current.reset();
       }
@@ -242,6 +274,22 @@ export default function ReflexionPage() {
           </p>
         </div>
       </div>
+      <Celebration
+        show={showCelebration}
+        xpGained={celebrationData.xpGained}
+        levelUp={celebrationData.levelUp}
+        newLevel={celebrationData.newLevel}
+        badgeUnlocked={celebrationData.badgeUnlocked}
+        onClose={() => setShowCelebration(false)}
+      />
+
+      <UpgradeModal
+        show={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        limitType="reflexiones"
+        currentCount={20}
+        limit={20}
+      />
     </div>
   );
 }

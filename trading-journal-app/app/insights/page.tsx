@@ -10,6 +10,10 @@ import Navbar from '@/components/Navbar';
 import TechnicalAnalysis from '@/components/TechnicalAnalysis';
 import EmotionalAnalysis from '@/components/EmotionalAnalysis';
 import EmotionalThermometer from '@/components/EmotionalThermometer';
+import { UserProfile } from '@/types';
+import { hasProAccess } from '@/lib/gamification';
+import UpgradeModal from '@/components/UpgradeModal';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function InsightsPage() {
   const { user, logout } = useAuth();
@@ -21,15 +25,28 @@ export default function InsightsPage() {
   const [emotionalInsights, setEmotionalInsights] = useState<any>(null);
   const [analyzingTechnical, setAnalyzingTechnical] = useState(false);
   const [analyzingEmotional, setAnalyzingEmotional] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     if (!user) {
       router.push('/');
       return;
     }
+    loadUserProfile();
     loadData();
   }, [user, router]);
-
+  const loadUserProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        setUserProfile(userDoc.data() as UserProfile);
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
   const loadData = async () => {
     if (!user) return;
 
@@ -143,7 +160,20 @@ export default function InsightsPage() {
       </div>
     );
   }
-
+  if (userProfile && !hasProAccess(userProfile)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-silver via-white to-silver">
+        <Navbar onLogout={logout} />
+        <div className="container mx-auto px-4 py-12 max-w-2xl">
+          <UpgradeModal
+            show={true}
+            onClose={() => router.push('/dashboard')}
+            limitType="insights"
+          />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-silver via-white to-silver">
       <Navbar onLogout={logout} />
@@ -212,46 +242,51 @@ export default function InsightsPage() {
         )}
 
         {/* Sección: Análisis Técnico */}
-        {trades.length >= 10 && (
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="flex items-center space-x-3 text-3xl font-heading font-bold text-carbon mb-2">
-                 <img src="/icons/icon-new-trade.png" alt="Análisis Técnico" className="w-16 h-16" />
-                 <span>Análisis Técnico</span>
-                </h2>
-                <p className="text-text-gray font-body">
-                  Identifica patrones y optimiza tu estrategia
-                </p>
-              </div>
-              <button
-                onClick={analyzeTechnical}
-                disabled={analyzingTechnical}
-                className="bg-gold-kint hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed font-body"
-              >
-                {analyzingTechnical ? (
-                  <span className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                    <span>Analizando con IA...</span>
-                  </span>
-                ) : (
-                  'Analizar con IA'
-                )}
-              </button>
-            </div>
+<div className="mb-12">
+  <div className="flex items-center justify-between mb-6">
+    <div>
+      <h2 className="flex items-center space-x-3 text-3xl font-heading font-bold text-carbon mb-2">
+        <img src="/icons/icon-new-trade.png" alt="Análisis Técnico" className="w-16 h-16" />
+        <span>Análisis Técnico</span>
+      </h2>
+      <p className="text-text-gray font-body">
+        Identifica patrones y optimiza tu estrategia
+      </p>
+    </div>
+    <button
+      onClick={analyzeTechnical}
+      disabled={analyzingTechnical || trades.length < 10}
+      className="bg-gold-kint hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-gold hover:shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed font-body"
+    >
+      {analyzingTechnical ? (
+        <span className="flex items-center space-x-2">
+          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          <span>Analizando con IA...</span>
+        </span>
+      ) : (
+        'Analizar con IA'
+      )}
+    </button>
+  </div>
 
-            {technicalInsights ? (
-              <TechnicalAnalysis insights={technicalInsights} />
-            ) : (
-              <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
-                <img src="/icons/icon-robot.png" alt="IA" className="w-16 h-16 mx-auto mb-4" />
-                <p className="text-text-gray font-body text-lg">
-                  Haz clic en "Analizar con IA" para generar insights técnicos personalizados
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+  {trades.length < 10 ? (
+    <div className="bg-white rounded-2xl shadow-lg p-8 border border-silver text-center">
+      <p className="text-text-gray font-body text-lg">
+        Necesitas al menos <strong>10 trades</strong> para generar análisis técnico.
+        Actualmente tienes <strong className="text-gold-kint">{trades.length} trades</strong>.
+      </p>
+    </div>
+  ) : technicalInsights ? (
+    <TechnicalAnalysis insights={technicalInsights} />
+  ) : (
+    <div className="bg-white rounded-2xl shadow-lg p-12 border border-silver text-center">
+      <img src="/icons/icon-robot.png" alt="IA" className="w-16 h-16 mx-auto mb-4" />
+      <p className="text-text-gray font-body text-lg">
+        Haz clic en "Analizar con IA" para generar insights técnicos personalizados
+      </p>
+    </div>
+  )}
+</div>
 
         {/* Sección: Análisis Emocional */}
         <div>
