@@ -45,12 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Crear perfil de usuario en Firestore
     const userProfile: UserProfile = {
-      uid: userCredential.user.uid,
-      email: email,
-      displayName: displayName,
-      createdAt: new Date(),
-      plan: 'free'
-    };
+  uid: userCredential.user.uid,
+  email: email,
+  displayName: displayName,
+  createdAt: new Date(),
+  plan: 'free',
+  role: 'user',
+  planStartDate: new Date(),
+  xp: 0,
+  level: 1,
+  badges: [],
+  streak: 0
+};
 
     await setDoc(doc(db, 'users', userCredential.user.uid), userProfile);
   };
@@ -69,12 +75,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!userDoc.exists()) {
       // Crear perfil si es nuevo usuario
       const userProfile: UserProfile = {
-        uid: userCredential.user.uid,
-        email: userCredential.user.email || '',
-        displayName: userCredential.user.displayName || '',
-        createdAt: new Date(),
-        plan: 'free'
-      };
+  uid: userCredential.user.uid,
+  email: userCredential.user.email || '',
+  displayName: userCredential.user.displayName || '',
+  createdAt: new Date(),
+  plan: 'free',
+  role: 'user',
+  planStartDate: new Date(),
+  xp: 0,
+  level: 1,
+  badges: [],
+  streak: 0
+};
       
       await setDoc(doc(db, 'users', userCredential.user.uid), userProfile);
     }
