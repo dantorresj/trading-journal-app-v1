@@ -1,40 +1,44 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        // Paleta KintEdge - Filosofía Kintsugi
-        'gold-kint': '#D4AF37',      // Oro principal (Kint + Toro)
-        'gold-dark': '#B8941F',       // Oro oscuro (hover)
-        'carbon': '#3A3F46',          // Carbón Edge (textos principales)
-        'silver': '#E8E8E8',          // Plata reflexión (fondos secundarios)
-        'lesson-red': '#DC2626',      // Rojo sutil para pérdidas
-        'growth-jade': '#10B981',     // Verde jade para crecimiento
-        'text-gray': '#6B7280',       // Gris para textos secundarios
-        
-        // Compatibilidad con código existente
-        primary: {
-          50: '#FAF8F3',
-          100: '#F5F1E8',
-          500: '#D4AF37',  // Oro Kintsugi
-          600: '#B8941F',  // Oro oscuro
-          700: '#9A7A1A',
-        },
-        secondary: {
-          500: '#3A3F46',  // Carbón Edge
-        }
+        'carbon': '#3A3F46',
+        'silver': '#E5E7EB',
+        'gold-kint': '#D4AF37',
+        'gold-dark': '#B8941F',
+        'gold-50': '#FDF8E8',
+        'gold-100': '#FAF0D1',
+        'text-gray': '#6B7280',
+        'growth-jade': '#10B981',
+        'growth-dark': '#059669',
+        'growth-light': '#D1FAE5',
+        'growth-50': '#ECFDF5',
+        'growth-200': '#A7F3D0',
+        'lesson-red': '#EF4444',
+        'lesson-light': '#FEE2E2',
       },
       fontFamily: {
-        'heading': ['"Playfair Display"', 'Georgia', 'serif'],
-        'body': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'mono': ['"Roboto Mono"', 'monospace'],
+        heading: ['var(--font-heading)', 'serif'],
+        body: ['var(--font-body)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
+      boxShadow: {
+        'gold': '0 4px 14px 0 rgba(212, 175, 55, 0.39)',
+        'gold-lg': '0 10px 25px 0 rgba(212, 175, 55, 0.5)',
+      },
+      backgroundImage: {
+        'gradient-gold': 'linear-gradient(135deg, #D4AF37 0%, #B8941F 100%)',
       },
     },
   },
   plugins: [],
-}
+};
+
+export default config;

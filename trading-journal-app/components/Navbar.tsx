@@ -1,115 +1,225 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { usePathname } from 'next/navigation';
 
 interface NavbarProps {
   onLogout: () => void;
 }
 
 export default function Navbar({ onLogout }: NavbarProps) {
-  const { user } = useAuth();
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-white shadow-md border-b border-silver sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-24">
-          {/* Logo - NO clickeable - MÁS GRANDE y SIN TEXTO */}
-          <div className="flex items-center">
-            <img 
-              src="/logo.png" 
-              alt="KintEdge Logo" 
-              className="h-20 w-auto"
-            />
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/insights"
-              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
-            >
-              <img src="/icons/icon-insights.png" alt="Insights" className="w-16 h-16" />
-              <span>Insights</span>
-            </Link>
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/dashboard" className="flex items-center space-x-2">
+            <span className="text-2xl font-heading font-bold text-carbon">
+              KintEdge
+            </span>
+          </Link>
 
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center space-x-1">
             <Link
               href="/dashboard"
-              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/dashboard')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
               Dashboard
             </Link>
 
             <Link
               href="/new-trade"
-              className="bg-gold-kint hover:bg-gold-dark text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 shadow-gold hover:shadow-gold-lg font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/new-trade')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
-              + Nuevo Trade
+              Nuevo Trade
             </Link>
-            
+
             <Link
               href="/all-trades"
-              className="text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/all-trades')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
               Todos los Trades
             </Link>
-            
+
+            <Link
+              href="/insights"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/insights')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
+            >
+              Insights
+            </Link>
+
             <Link
               href="/reflexion"
-              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/reflexion')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
-              <img src="/icons/icon-reflection.png" alt="Reflexión" className="w-14 h-14" />
-              <span>Reflexión</span>
+              Reflexión
             </Link>
-            
+
             <Link
               href="/academia"
-             className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/academia')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
-             <img src="/icons/icon-academy.png" alt="Academia" className="w-5 h-5" />
-              <span>Academia</span>
+              Academia
             </Link>
 
-             <Link
+            <Link
               href="/trading-plan"
-              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/trading-plan')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
             >
-             <img src="/icons/icon-plan.png" alt="Trading Plan" className="w-5 h-5" />
-              <span>Trading Plan</span>
+              Trading Plan
+            </Link>
+            <Link
+  href="/profile"
+  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+    isActive('/profile')
+      ? 'bg-gold-kint text-white'
+      : 'text-carbon hover:text-gold-kint'
+  }`}
+>
+  Perfil
+</Link>
+          </div>
+
+          {/* Right Side - Settings & Logout */}
+          <div className="flex items-center space-x-2">
+            <Link
+              href="/settings"
+              className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
+              title="Configuración"
+            >
+              <img src="/icons/icon-settings.png" alt="Settings" className="w-5 h-5" />
             </Link>
 
-            <div className="border-l border-silver h-8"></div>
-            
-            <div className="flex items-center space-x-3">
-              <div className="text-right">
-                <p className="text-sm font-medium text-carbon font-body">
-                  {user?.email?.split('@')[0]}
-                </p>
-                <p className="text-xs text-text-gray font-body">Plan Free</p>
-              </div>
-              
-              <Link
-                href="/settings"
-                className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
-                title="Configuración"
-              >
-                <img src="/icons/icon-settings.png" alt="Settings" className="w-8 h-8" />
-              </Link>
-              <Link
-                href="/profile"
-                className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
-                title="Mi Perfil"
-              >
-               👤
-              </Link>
-              <button
-                onClick={onLogout}
-                className="text-text-gray hover:text-lesson-red px-3 py-2 rounded-lg transition-colors duration-300"
-                title="Cerrar sesión"
-              >
-                🚪
-              </button>
-            </div>
+            <button
+              onClick={onLogout}
+              className="bg-lesson-red hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 font-body font-medium"
+            >
+              Salir
+            </button>
           </div>
+        </div>
+
+        {/* Mobile Menu (opcional - puedes expandir esto) */}
+        <div className="md:hidden py-2 space-y-1">
+          <Link
+            href="/dashboard"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/dashboard')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            href="/new-trade"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/new-trade')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Nuevo Trade
+          </Link>
+
+          <Link
+            href="/all-trades"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/all-trades')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Todos los Trades
+          </Link>
+
+          <Link
+            href="/insights"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/insights')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Insights
+          </Link>
+
+          <Link
+            href="/reflexion"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/reflexion')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Reflexión
+          </Link>
+
+          <Link
+            href="/academia"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/academia')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Academia
+          </Link>
+
+          <Link
+            href="/trading-plan"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/trading-plan')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Trading Plan
+          </Link>
+          <Link
+  href="/profile"
+  className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+    isActive('/profile')
+      ? 'bg-gold-kint text-white'
+      : 'text-carbon hover:text-gold-kint'
+  }`}
+>
+  Perfil
+</Link>
         </div>
       </div>
     </nav>
