@@ -9,6 +9,7 @@ import { UserProfile, Trade, TradingPlan } from '@/types';
 import Navbar from '@/components/Navbar';
 import UserProgress from '@/components/UserProgress';
 import MonthlyCalendar from '@/components/MonthlyCalendar';
+import SubscriptionManager from '@/components/SubscriptionManager';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -90,6 +91,7 @@ export default function ProfilePage() {
           currentMonth={currentMonth}
         />
       </div>
+        <SubscriptionManager user={userProfile} />
     </div>
   </div>
 );

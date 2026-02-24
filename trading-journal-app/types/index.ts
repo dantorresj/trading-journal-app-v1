@@ -19,6 +19,8 @@ export interface Trade {
   comentarios?: string;
   imageUrl?: string;
   createdAt: Date;
+  stripeCustomerId?: string;           // ID del cliente en Stripe
+  stripeSubscriptionId?: string;       // ID de la suscripción
 }
 
 // Tipo para una reflexión diaria

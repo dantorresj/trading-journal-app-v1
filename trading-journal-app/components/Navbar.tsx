@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation';
 
 interface NavbarProps {
   onLogout: () => void;
+  userPlan?: 'free' | 'pro';
 }
 
-export default function Navbar({ onLogout }: NavbarProps) {
+export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
@@ -101,16 +102,27 @@ export default function Navbar({ onLogout }: NavbarProps) {
             >
               Trading Plan
             </Link>
+
             <Link
-  href="/profile"
-  className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
-    isActive('/profile')
-      ? 'bg-gold-kint text-white'
-      : 'text-carbon hover:text-gold-kint'
-  }`}
->
-  Perfil
-</Link>
+              href="/profile"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/profile')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
+            >
+              Perfil
+            </Link>
+
+            {/* Upgrade - solo para usuarios Free */}
+            {userPlan === 'free' && (
+              <Link
+                href="/upgrade"
+                className="bg-gold-kint hover:bg-gold-dark text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 font-body shadow-gold"
+              >
+                ⚡ Upgrade
+              </Link>
+            )}
           </div>
 
           {/* Right Side - Settings & Logout */}
@@ -132,7 +144,7 @@ export default function Navbar({ onLogout }: NavbarProps) {
           </div>
         </div>
 
-        {/* Mobile Menu (opcional - puedes expandir esto) */}
+        {/* Mobile Menu */}
         <div className="md:hidden py-2 space-y-1">
           <Link
             href="/dashboard"
@@ -210,16 +222,27 @@ export default function Navbar({ onLogout }: NavbarProps) {
           >
             Trading Plan
           </Link>
+
           <Link
-  href="/profile"
-  className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
-    isActive('/profile')
-      ? 'bg-gold-kint text-white'
-      : 'text-carbon hover:text-gold-kint'
-  }`}
->
-  Perfil
-</Link>
+            href="/profile"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/profile')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Perfil
+          </Link>
+
+          {/* Upgrade mobile - solo para usuarios Free */}
+          {userPlan === 'free' && (
+            <Link
+              href="/upgrade"
+              className="block bg-gold-kint hover:bg-gold-dark text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 font-body shadow-gold"
+            >
+              ⚡ Upgrade
+            </Link>
+          )}
         </div>
       </div>
     </nav>
