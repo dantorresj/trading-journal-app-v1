@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { adminDb } from '@/lib/firebase-admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,20 +13,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Obtener Stripe Customer ID del usuario
-    const userDoc = await getDoc(doc(db, 'users', userId));
-    
-    if (!userDoc.exists()) {
+    const userDoc = await adminDb.doc(`users/${userId}`).get();
+
+    if (!userDoc.exists) {
       return NextResponse.json(
         { error: 'Usuario no encontrado' },
         { status: 404 }
       );
     }
 
-    const userData = userDoc.data();
+    const userData = userDoc.data()!;
     const customerId = userData.stripeCustomerId;
-
-    console.log('Portal - userData:', { plan: userData.plan, hasCustomerId: !!customerId });
 
     if (!customerId) {
       return NextResponse.json(
@@ -36,7 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear sesión del portal de cliente
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
