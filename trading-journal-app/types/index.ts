@@ -9,6 +9,7 @@ export interface Trade {
   setup: string;
   direccion: string;
   temporalidad: string;
+  tradingType: 'Futuros' | 'Forex' | 'CFDs';
   contratos: number;
   puntos: number;
   hora_entrada: string;
@@ -19,8 +20,8 @@ export interface Trade {
   comentarios?: string;
   imageUrl?: string;
   createdAt: Date;
-  stripeCustomerId?: string;           // ID del cliente en Stripe
-  stripeSubscriptionId?: string;       // ID de la suscripción
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
 }
 
 // Tipo para una reflexión diaria
@@ -50,6 +51,9 @@ export interface UserProfile {
   plan: 'free' | 'pro' | 'lifetime';
   role: 'user' | 'admin' | 'beta';
   planStartDate: Date;
+  // Stripe
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
   // Gamificación
   xp: number;
   level: number;

@@ -27,9 +27,11 @@ export async function POST(request: NextRequest) {
     const userData = userDoc.data();
     const customerId = userData.stripeCustomerId;
 
+    console.log('Portal - userData:', { plan: userData.plan, hasCustomerId: !!customerId });
+
     if (!customerId) {
       return NextResponse.json(
-        { error: 'Usuario no tiene suscripción activa' },
+        { error: 'No tienes una suscripción activa. Por favor, suscríbete primero desde /upgrade' },
         { status: 400 }
       );
     }
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error creating portal session:', error);
     return NextResponse.json(
-      { error: error.message },
+      { error: error.message || 'Error al crear portal' },
       { status: 500 }
     );
   }

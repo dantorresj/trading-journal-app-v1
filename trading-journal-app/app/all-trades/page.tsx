@@ -320,10 +320,15 @@ export default function AllTradesPage() {
                         <span className="font-semibold">Dirección:</span> {trade.direccion}
                       </div>
                       <div>
-                        <span className="font-semibold">Contratos:</span> {trade.contratos}
+                        <span className="font-semibold">
+                          {(trade.tradingType || 'Futuros') === 'Futuros' ? 'Contratos:' : 'Lotes:'}
+                        </span> {trade.contratos.toFixed(2)}
                       </div>
                       <div>
-                        <span className="font-semibold">Puntos:</span> {trade.puntos}
+                        <span className="font-semibold">
+                          {(trade.tradingType || 'Futuros') === 'Futuros' ? 'Puntos:' : 
+                           (trade.tradingType || 'Futuros') === 'Forex' ? 'Pips:' : 'Ticks:'}
+                        </span> {trade.puntos.toFixed(2)}
                       </div>
                       <div>
                         <span className="font-semibold">Horario:</span> {trade.horario}

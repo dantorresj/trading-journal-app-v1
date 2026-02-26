@@ -159,11 +159,11 @@ export default function MonthlyCalendar({ trades, tradingPlan, currentMonth }: M
           <span>Plan violado</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="font-mono text-growth-jade font-semibold">+123</span>
+          <span className="font-mono text-growth-jade font-semibold">+</span>
           <span>Ganancia</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="font-mono text-lesson-red font-semibold">-123</span>
+          <span className="font-mono text-lesson-red font-semibold">-</span>
           <span>Pérdida</span>
         </div>
       </div>
