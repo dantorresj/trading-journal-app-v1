@@ -113,13 +113,24 @@ export default function SubscriptionManager({ user }: SubscriptionManagerProps) 
         )}
 
         {user.plan === 'pro' && (
-          <button
-            onClick={handleManageSubscription}
-            disabled={loading}
-            className="w-full bg-gray-200 hover:bg-gray-300 text-carbon font-semibold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 font-body"
-          >
-            {loading ? 'Cargando...' : 'Gestionar Suscripción'}
-          </button>
+          <>
+            {user.stripeCustomerId ? (
+              <button
+                onClick={handleManageSubscription}
+                disabled={loading}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-carbon font-semibold py-3 rounded-lg transition-all duration-300 disabled:opacity-50 font-body"
+              >
+                {loading ? 'Cargando...' : 'Gestionar Suscripción'}
+              </button>
+            ) : (
+              <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="text-sm text-yellow-800 font-body">
+                  ⚠️ Tu cuenta PRO está activa pero aún no se ha sincronizado con Stripe.
+                  Si acabas de suscribirte, espera unos segundos y recarga la página.
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {user.plan === 'lifetime' && (

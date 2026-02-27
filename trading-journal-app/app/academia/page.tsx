@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function AcademiaPage() {
   const { user, logout } = useAuth();
@@ -213,6 +214,7 @@ export default function AcademiaPage() {
             </p>
           </div>
         </div>
+        <Footer />
       </div>
     </div>
   );

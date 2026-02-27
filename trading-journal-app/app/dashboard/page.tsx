@@ -10,6 +10,7 @@ import DashboardStats from '@/components/DashboardStats';
 import DashboardCharts from '@/components/DashboardCharts';
 import DashboardTables from '@/components/DashboardTables';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -128,6 +129,7 @@ export default function Dashboard() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

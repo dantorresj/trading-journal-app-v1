@@ -10,6 +10,7 @@ import Navbar from '@/components/Navbar';
 import UserProgress from '@/components/UserProgress';
 import MonthlyCalendar from '@/components/MonthlyCalendar';
 import SubscriptionManager from '@/components/SubscriptionManager';
+import Footer from '@/components/Footer';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -92,6 +93,7 @@ export default function ProfilePage() {
         />
       </div>
         <SubscriptionManager user={userProfile} />
+        <Footer />
     </div>
   </div>
 );

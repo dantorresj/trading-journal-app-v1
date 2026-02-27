@@ -14,6 +14,7 @@ import { UserProfile } from '@/types';
 import { hasProAccess } from '@/lib/gamification';
 import UpgradeModal from '@/components/UpgradeModal';
 import { doc, getDoc } from 'firebase/firestore';
+import Footer from '@/components/Footer';
 
 export default function InsightsPage() {
   const { user, logout } = useAuth();
@@ -359,6 +360,7 @@ export default function InsightsPage() {
             cada emoción analizada, cada patrón descubierto, se convierte en oro que fortalece tu camino.
           </p>
         </div>
+        <Footer />
       </div>
     </div>
   );

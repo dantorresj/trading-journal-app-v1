@@ -7,6 +7,7 @@ import { collection, query, where, getDocs, deleteDoc, doc, orderBy } from 'fire
 import { db } from '@/lib/firebase';
 import { Trade } from '@/types';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function AllTradesPage() {
   const { user, logout } = useAuth();
@@ -419,6 +420,7 @@ export default function AllTradesPage() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }
