@@ -14,6 +14,8 @@ export interface Trade {
   puntos: number;
   hora_entrada: string;
   hora_salida: string;
+  trigger_entrada: string;
+  ejecute_bien: 'Si' | 'No';
   resultado: 'Won' | 'Lose' | 'BE';
   resultado_especifico: string;
   ganancia_perdida: number;

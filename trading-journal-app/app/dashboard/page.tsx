@@ -16,8 +16,14 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [trades, setTrades] = useState<Trade[]>([]);
+  const [filteredTrades, setFilteredTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [inspirationalPhrase, setInspirationalPhrase] = useState('');
+  
+  // Estados para filtros
+  const [filterCuenta, setFilterCuenta] = useState('');
+  const [filterEstrategia, setFilterEstrategia] = useState('');
+  const [filterDireccion, setFilterDireccion] = useState('');
 
   const kintsugiPhrases = [
     "Cada grieta es una oportunidad de oro",
@@ -40,6 +46,34 @@ export default function Dashboard() {
 
     loadTrades();
   }, [user, router]);
+
+  // Aplicar filtros cuando cambian
+  useEffect(() => {
+    let filtered = [...trades];
+
+    // Filtro por cuenta
+    if (filterCuenta) {
+      filtered = filtered.filter(trade => trade.identificadorCuenta === filterCuenta);
+    }
+
+    // Filtro por estrategia
+    if (filterEstrategia) {
+      filtered = filtered.filter(trade => trade.setup === filterEstrategia);
+    }
+
+    // Filtro por dirección
+    if (filterDireccion) {
+      filtered = filtered.filter(trade => trade.direccion === filterDireccion);
+    }
+
+    setFilteredTrades(filtered);
+  }, [trades, filterCuenta, filterEstrategia, filterDireccion]);
+
+  // Obtener cuentas únicas
+  const uniqueCuentas = Array.from(new Set(trades.map(t => t.identificadorCuenta).filter(Boolean)));
+
+  // Obtener estrategias únicas
+  const uniqueEstrategias = Array.from(new Set(trades.map(t => t.setup).filter(Boolean)));
 
   const loadTrades = async () => {
     if (!user) return;
@@ -71,6 +105,7 @@ export default function Dashboard() {
       });
       
       setTrades(tradesData);
+      setFilteredTrades(tradesData);
     } catch (error) {
       console.error('Error loading trades:', error);
     } finally {
@@ -123,9 +158,90 @@ export default function Dashboard() {
           </div>
         ) : (
           <>
-            <DashboardStats trades={trades} />
-            <DashboardCharts trades={trades} />
-            <DashboardTables trades={trades} />
+            {/* Filtros */}
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-silver">
+              <h3 className="text-lg font-heading font-semibold text-carbon mb-4">
+                Filtros
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {/* Filtro Cuenta */}
+                <div>
+                  <label className="block text-sm font-medium text-carbon mb-2 font-body">
+                    Cuenta
+                  </label>
+                  <select
+                    value={filterCuenta}
+                    onChange={(e) => setFilterCuenta(e.target.value)}
+                    className="w-full px-4 py-2 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                  >
+                    <option value="">Todas las cuentas</option>
+                    {uniqueCuentas.map((cuenta) => (
+                      <option key={cuenta} value={cuenta}>
+                        {cuenta}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Filtro Estrategia */}
+                <div>
+                  <label className="block text-sm font-medium text-carbon mb-2 font-body">
+                    Estrategia
+                  </label>
+                  <select
+                    value={filterEstrategia}
+                    onChange={(e) => setFilterEstrategia(e.target.value)}
+                    className="w-full px-4 py-2 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                  >
+                    <option value="">Todas las estrategias</option>
+                    {uniqueEstrategias.map((estrategia) => (
+                      <option key={estrategia} value={estrategia}>
+                        {estrategia}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Filtro Dirección */}
+                <div>
+                  <label className="block text-sm font-medium text-carbon mb-2 font-body">
+                    Dirección
+                  </label>
+                  <select
+                    value={filterDireccion}
+                    onChange={(e) => setFilterDireccion(e.target.value)}
+                    className="w-full px-4 py-2 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                  >
+                    <option value="">Todas las direcciones</option>
+                    <option value="Long">Long</option>
+                    <option value="Short">Short</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Indicador de filtros activos */}
+              {(filterCuenta || filterEstrategia || filterDireccion) && (
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="text-sm text-text-gray font-body">
+                    Mostrando {filteredTrades.length} de {trades.length} trades
+                  </p>
+                  <button
+                    onClick={() => {
+                      setFilterCuenta('');
+                      setFilterEstrategia('');
+                      setFilterDireccion('');
+                    }}
+                    className="text-sm text-gold-kint hover:text-gold-dark font-semibold font-body"
+                  >
+                    Limpiar filtros
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <DashboardStats trades={filteredTrades} />
+            <DashboardCharts trades={filteredTrades} />
+            <DashboardTables trades={filteredTrades} />
           </>
         )}
       </div>

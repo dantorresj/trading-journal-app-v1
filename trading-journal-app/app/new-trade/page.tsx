@@ -241,6 +241,8 @@ export default function NewTrade() {
         tradingType: userSettings?.tradingType || 'Futuros',
         hora_entrada: formData.get('hora_entrada') as string,
         hora_salida: formData.get('hora_salida') as string,
+        trigger_entrada: formData.get('trigger_entrada') as string,
+        ejecute_bien: formData.get('ejecute_bien') as 'Si' | 'No',
         contratos: parseFloat(formData.get('contratos') as string),
         puntos: parseFloat(formData.get('puntos') as string),
         ganancia_perdida: parseFloat(formData.get('ganancia_perdida') as string),
@@ -484,6 +486,33 @@ removeImage();
                   placeholder="11:45"
                   className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
                 />
+              </div>
+            </div>
+
+            {/* Trigger de entrada y ¿Ejecuté bien? */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-carbon mb-2 font-body">Trigger de entrada *</label>
+                <input
+                  type="text"
+                  name="trigger_entrada"
+                  required
+                  placeholder="Ej: Vela envolvente"
+                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-carbon mb-2 font-body">¿Ejecuté bien? *</label>
+                <select
+                  name="ejecute_bien"
+                  required
+                  className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+                >
+                  <option value="">Selecciona</option>
+                  <option value="Si">Sí</option>
+                  <option value="No">No</option>
+                </select>
               </div>
             </div>
 
