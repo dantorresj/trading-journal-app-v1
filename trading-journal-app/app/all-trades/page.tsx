@@ -135,16 +135,43 @@ export default function AllTradesPage() {
   };
 
   const exportToCSV = () => {
-    const headers = ['Fecha', 'Activo', 'Setup', 'Dirección', 'Contratos', 'Puntos', 'Resultado', 'P&L', 'Comentarios'];
+    const headers = [
+      'Fecha', 
+      'Activo', 
+      'Setup', 
+      'Dirección', 
+      'Temporalidad',
+      'Horario', 
+      'Cuenta', 
+      'Hora Entrada', 
+      'Hora Salida',
+      'Trigger Entrada', 
+      '¿Ejecuté bien?',
+      'Contratos/Lotes', 
+      'Puntos/Pips', 
+      'P&L',
+      'Resultado', 
+      'Resultado Específico', 
+      'Comentarios'
+    ];
+    
     const csvData = filteredTrades.map(trade => [
       trade.fecha,
       trade.activo,
       trade.setup,
       trade.direccion,
+      trade.temporalidad || '',
+      trade.horario || '',
+      trade.identificadorCuenta || '',
+      trade.hora_entrada,
+      trade.hora_salida,
+      trade.trigger_entrada || '',
+      trade.ejecute_bien || '',
       trade.contratos,
       trade.puntos,
-      trade.resultado,
       trade.ganancia_perdida,
+      trade.resultado,
+      trade.resultado_especifico || '',
       trade.comentarios || ''
     ]);
 
@@ -341,6 +368,15 @@ export default function AllTradesPage() {
                         <span className="font-semibold">Salida:</span> {trade.hora_salida}
                       </div>
                     </div>
+
+                    {trade.ejecute_bien && (
+                      <div className="mt-3 text-sm">
+                        <span className="font-semibold">✅ Ejecuté bien:</span>{' '}
+                        <span className={trade.ejecute_bien === 'Si' ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
+                          {trade.ejecute_bien}
+                        </span>
+                      </div>
+                    )}
 
                     {trade.comentarios && (
                       <div className="mt-3 text-sm text-gray-600">

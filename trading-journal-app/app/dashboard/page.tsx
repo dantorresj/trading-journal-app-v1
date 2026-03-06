@@ -75,6 +75,76 @@ export default function Dashboard() {
   // Obtener estrategias únicas
   const uniqueEstrategias = Array.from(new Set(trades.map(t => t.setup).filter(Boolean)));
 
+  // Calcular rachas de trades
+  const calculateStreaks = (tradesToAnalyze: Trade[]) => {
+    if (tradesToAnalyze.length === 0) {
+      return {
+        currentWinStreak: 0,
+        maxWinStreak: 0,
+        currentLossStreak: 0,
+        maxLossStreak: 0
+      };
+    }
+
+    let currentWinStreak = 0;
+    let maxWinStreak = 0;
+    let currentLossStreak = 0;
+    let maxLossStreak = 0;
+    let tempWinStreak = 0;
+    let tempLossStreak = 0;
+
+    // Ordenar por fecha para analizar cronológicamente
+    const sortedTrades = [...tradesToAnalyze].sort((a, b) => {
+      const dateA = new Date(a.fecha + ' ' + a.hora_entrada);
+      const dateB = new Date(b.fecha + ' ' + b.hora_entrada);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    sortedTrades.forEach((trade, index) => {
+      if (trade.resultado === 'Won') {
+        tempWinStreak++;
+        tempLossStreak = 0;
+        if (tempWinStreak > maxWinStreak) {
+          maxWinStreak = tempWinStreak;
+        }
+        if (index === sortedTrades.length - 1) {
+          currentWinStreak = tempWinStreak;
+        }
+      } else if (trade.resultado === 'Lose') {
+        tempLossStreak++;
+        tempWinStreak = 0;
+        if (tempLossStreak > maxLossStreak) {
+          maxLossStreak = tempLossStreak;
+        }
+        if (index === sortedTrades.length - 1) {
+          currentLossStreak = tempLossStreak;
+        }
+      } else {
+        // BE rompe ambas rachas
+        tempWinStreak = 0;
+        tempLossStreak = 0;
+      }
+    });
+
+    // Si el último trade no es Won, la racha actual de ganados es 0
+    if (sortedTrades[sortedTrades.length - 1]?.resultado !== 'Won') {
+      currentWinStreak = 0;
+    }
+    // Si el último trade no es Lose, la racha actual de perdidos es 0
+    if (sortedTrades[sortedTrades.length - 1]?.resultado !== 'Lose') {
+      currentLossStreak = 0;
+    }
+
+    return {
+      currentWinStreak,
+      maxWinStreak,
+      currentLossStreak,
+      maxLossStreak
+    };
+  };
+
+  const streaks = calculateStreaks(filteredTrades);
+
   const loadTrades = async () => {
     if (!user) return;
 
@@ -240,6 +310,60 @@ export default function Dashboard() {
             </div>
 
             <DashboardStats trades={filteredTrades} />
+            
+            {/* Rachas de Trades */}
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              {/* Racha de Ganados */}
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-silver">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-heading font-semibold text-carbon">
+                    🔥 Racha de Ganados
+                  </h3>
+                </div>
+                <div className="text-center">
+                  <p className="text-5xl font-bold font-mono text-growth-jade mb-2">
+                    {streaks.currentWinStreak}
+                  </p>
+                  <p className="text-sm text-text-gray font-body mb-4">
+                    {streaks.currentWinStreak === 1 ? 'trade actual' : 'trades actuales'}
+                  </p>
+                  <div className="pt-4 border-t border-silver">
+                    <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-1">
+                      Mejor Racha
+                    </p>
+                    <p className="text-2xl font-bold font-mono text-carbon">
+                      {streaks.maxWinStreak} {streaks.maxWinStreak === 1 ? 'trade' : 'trades'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Racha de Perdidos */}
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-silver">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-heading font-semibold text-carbon">
+                    ❄️ Racha de Perdidos
+                  </h3>
+                </div>
+                <div className="text-center">
+                  <p className="text-5xl font-bold font-mono text-lesson-red mb-2">
+                    {streaks.currentLossStreak}
+                  </p>
+                  <p className="text-sm text-text-gray font-body mb-4">
+                    {streaks.currentLossStreak === 1 ? 'trade actual' : 'trades actuales'}
+                  </p>
+                  <div className="pt-4 border-t border-silver">
+                    <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-1">
+                      Mayor Racha
+                    </p>
+                    <p className="text-2xl font-bold font-mono text-carbon">
+                      {streaks.maxLossStreak} {streaks.maxLossStreak === 1 ? 'trade' : 'trades'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <DashboardCharts trades={filteredTrades} />
             <DashboardTables trades={filteredTrades} />
           </>
