@@ -129,10 +129,11 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
           <div className="flex items-center space-x-2">
             <Link
               href="/settings"
-              className="text-text-gray hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300"
+              className="flex items-center space-x-2 text-carbon hover:text-gold-kint px-3 py-2 rounded-lg transition-colors duration-300 font-body"
               title="Configuración"
             >
               <img src="/icons/icon-settings.png" alt="Settings" className="w-5 h-5" />
+              <span className="hidden lg:inline">Configuración</span>
             </Link>
 
             <button

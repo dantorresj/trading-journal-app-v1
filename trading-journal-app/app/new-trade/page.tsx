@@ -229,6 +229,22 @@ export default function NewTrade() {
       imageUrl = await getDownloadURL(storageRef);
     }
 
+      // Normalización automática de pérdidas
+      const resultado = formData.get('resultado') as 'Won' | 'Lose' | 'BE';
+      let ganancia_perdida = parseFloat(formData.get('ganancia_perdida') as string);
+      
+      // Si es Lose y el valor es positivo → convertir a negativo
+      if (resultado === 'Lose' && ganancia_perdida > 0) {
+        ganancia_perdida = -Math.abs(ganancia_perdida);
+      }
+      
+      // Si es Won y el valor es negativo → convertir a positivo
+      if (resultado === 'Won' && ganancia_perdida < 0) {
+        ganancia_perdida = Math.abs(ganancia_perdida);
+      }
+      
+      // Si es BE → mantener el valor tal como está
+
       const tradeData: Omit<Trade, 'id'> = {
         userId: user.uid,
         fecha: formData.get('fecha') as string,
@@ -245,8 +261,8 @@ export default function NewTrade() {
         ejecute_bien: formData.get('ejecute_bien') as 'Si' | 'No',
         contratos: parseFloat(formData.get('contratos') as string),
         puntos: parseFloat(formData.get('puntos') as string),
-        ganancia_perdida: parseFloat(formData.get('ganancia_perdida') as string),
-        resultado: formData.get('resultado') as 'Won' | 'Lose' | 'BE',
+        ganancia_perdida: ganancia_perdida,
+        resultado: resultado,
         resultado_especifico: formData.get('resultado_especifico') as string,
         comentarios: formData.get('comentarios') as string,
         imageUrl: imageUrl,

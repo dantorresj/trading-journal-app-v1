@@ -75,14 +75,58 @@ export default function Dashboard() {
   // Obtener estrategias únicas
   const uniqueEstrategias = Array.from(new Set(trades.map(t => t.setup).filter(Boolean)));
 
-  // Calcular rachas de trades
+  // Calcular Max Drawdown
+  const calculateMaxDrawdown = (tradesToAnalyze: Trade[]) => {
+    if (tradesToAnalyze.length === 0) {
+      return { maxDD: 0, maxDDPercent: 0 };
+    }
+
+    // Ordenar por fecha cronológicamente
+    const sortedTrades = [...tradesToAnalyze].sort((a, b) => {
+      const dateA = new Date(a.fecha + ' ' + a.hora_entrada);
+      const dateB = new Date(b.fecha + ' ' + b.hora_entrada);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    let equity = 0;
+    let peak = 0;
+    let maxDD = 0;
+    
+    sortedTrades.forEach(trade => {
+      equity += trade.ganancia_perdida;
+      
+      // Actualizar pico si alcanzamos nuevo máximo
+      if (equity > peak) {
+        peak = equity;
+      }
+      
+      // Calcular drawdown actual
+      const currentDrawdown = peak - equity;
+      
+      // Actualizar max drawdown si es mayor
+      if (currentDrawdown > maxDD) {
+        maxDD = currentDrawdown;
+      }
+    });
+    
+    // Calcular porcentaje
+    const maxDDPercent = peak > 0 ? (maxDD / peak) * 100 : 0;
+    
+    return {
+      maxDD,
+      maxDDPercent
+    };
+  };
+
+  // Calcular rachas de trades (mejorado)
   const calculateStreaks = (tradesToAnalyze: Trade[]) => {
     if (tradesToAnalyze.length === 0) {
       return {
         currentWinStreak: 0,
         maxWinStreak: 0,
         currentLossStreak: 0,
-        maxLossStreak: 0
+        maxLossStreak: 0,
+        lastResult: null
       };
     }
 
@@ -92,6 +136,7 @@ export default function Dashboard() {
     let maxLossStreak = 0;
     let tempWinStreak = 0;
     let tempLossStreak = 0;
+    let lastResult = null;
 
     // Ordenar por fecha para analizar cronológicamente
     const sortedTrades = [...tradesToAnalyze].sort((a, b) => {
@@ -109,6 +154,7 @@ export default function Dashboard() {
         }
         if (index === sortedTrades.length - 1) {
           currentWinStreak = tempWinStreak;
+          lastResult = 'Won';
         }
       } else if (trade.resultado === 'Lose') {
         tempLossStreak++;
@@ -118,11 +164,15 @@ export default function Dashboard() {
         }
         if (index === sortedTrades.length - 1) {
           currentLossStreak = tempLossStreak;
+          lastResult = 'Lose';
         }
       } else {
         // BE rompe ambas rachas
         tempWinStreak = 0;
         tempLossStreak = 0;
+        if (index === sortedTrades.length - 1) {
+          lastResult = 'BE';
+        }
       }
     });
 
@@ -139,10 +189,12 @@ export default function Dashboard() {
       currentWinStreak,
       maxWinStreak,
       currentLossStreak,
-      maxLossStreak
+      maxLossStreak,
+      lastResult
     };
   };
 
+  const maxDrawdown = calculateMaxDrawdown(filteredTrades);
   const streaks = calculateStreaks(filteredTrades);
 
   const loadTrades = async () => {
@@ -311,6 +363,34 @@ export default function Dashboard() {
 
             <DashboardStats trades={filteredTrades} />
             
+            {/* Max Drawdown */}
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-silver">
+              <h3 className="text-xl font-heading font-semibold text-carbon mb-4">
+                📉 Max Drawdown
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="text-center">
+                  <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-2">
+                    Valor Absoluto
+                  </p>
+                  <p className="text-4xl font-bold font-mono text-lesson-red">
+                    ${maxDrawdown.maxDD.toFixed(2)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-2">
+                    Porcentaje
+                  </p>
+                  <p className="text-4xl font-bold font-mono text-lesson-red">
+                    {maxDrawdown.maxDDPercent.toFixed(2)}%
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-text-gray font-body text-center mt-4">
+                Máxima caída desde un pico hasta un valle antes de un nuevo máximo
+              </p>
+            </div>
+
             {/* Rachas de Trades */}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               {/* Racha de Ganados */}
@@ -325,7 +405,13 @@ export default function Dashboard() {
                     {streaks.currentWinStreak}
                   </p>
                   <p className="text-sm text-text-gray font-body mb-4">
-                    {streaks.currentWinStreak === 1 ? 'trade actual' : 'trades actuales'}
+                    {streaks.currentWinStreak === 0 && streaks.lastResult === 'BE' 
+                      ? 'Racha interrumpida por BE'
+                      : streaks.currentWinStreak === 0 
+                      ? 'Sin racha activa' 
+                      : streaks.currentWinStreak === 1 
+                      ? 'trade actual' 
+                      : 'trades actuales'}
                   </p>
                   <div className="pt-4 border-t border-silver">
                     <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-1">
@@ -350,7 +436,13 @@ export default function Dashboard() {
                     {streaks.currentLossStreak}
                   </p>
                   <p className="text-sm text-text-gray font-body mb-4">
-                    {streaks.currentLossStreak === 1 ? 'trade actual' : 'trades actuales'}
+                    {streaks.currentLossStreak === 0 && streaks.lastResult === 'BE' 
+                      ? 'Racha interrumpida por BE'
+                      : streaks.currentLossStreak === 0 
+                      ? 'Sin racha activa' 
+                      : streaks.currentLossStreak === 1 
+                      ? 'trade actual' 
+                      : 'trades actuales'}
                   </p>
                   <div className="pt-4 border-t border-silver">
                     <p className="text-xs text-text-gray font-body uppercase tracking-wide mb-1">
