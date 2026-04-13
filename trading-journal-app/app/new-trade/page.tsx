@@ -245,6 +245,21 @@ export default function NewTrade() {
       
       // Si es BE → mantener el valor tal como está
 
+      // Normalización automática de puntos/pips/ticks
+      let puntos = parseFloat(formData.get('puntos') as string);
+      
+      // Si es Lose y el valor es positivo → convertir a negativo
+      if (resultado === 'Lose' && puntos > 0) {
+        puntos = -Math.abs(puntos);
+      }
+      
+      // Si es Won y el valor es negativo → convertir a positivo
+      if (resultado === 'Won' && puntos < 0) {
+        puntos = Math.abs(puntos);
+      }
+      
+      // Si es BE → mantener el valor tal como está
+
       const tradeData: Omit<Trade, 'id'> = {
         userId: user.uid,
         fecha: formData.get('fecha') as string,
@@ -260,7 +275,7 @@ export default function NewTrade() {
         trigger_entrada: formData.get('trigger_entrada') as string,
         ejecute_bien: formData.get('ejecute_bien') as 'Si' | 'No',
         contratos: parseFloat(formData.get('contratos') as string),
-        puntos: parseFloat(formData.get('puntos') as string),
+        puntos: puntos,
         ganancia_perdida: ganancia_perdida,
         resultado: resultado,
         resultado_especifico: formData.get('resultado_especifico') as string,

@@ -19,6 +19,7 @@ export default function AllTradesPage() {
   const [filterActivo, setFilterActivo] = useState('');
   const [filterSetup, setFilterSetup] = useState('');
   const [filterResultado, setFilterResultado] = useState('');
+  const [filterCuenta, setFilterCuenta] = useState('');
   const [sortBy, setSortBy] = useState<'fecha' | 'ganancia_perdida'>('fecha');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
@@ -35,7 +36,7 @@ export default function AllTradesPage() {
 
   useEffect(() => {
     applyFilters();
-  }, [trades, searchTerm, filterActivo, filterSetup, filterResultado, sortBy, sortOrder]);
+  }, [trades, searchTerm, filterActivo, filterSetup, filterResultado, filterCuenta, sortBy, sortOrder]);
 
   const loadTrades = async () => {
     if (!user) return;
@@ -101,6 +102,11 @@ export default function AllTradesPage() {
       filtered = filtered.filter(trade => trade.resultado === filterResultado);
     }
 
+    // Filtro por cuenta
+    if (filterCuenta) {
+      filtered = filtered.filter(trade => trade.identificadorCuenta === filterCuenta);
+    }
+
     // Ordenar
     filtered.sort((a, b) => {
       let comparison = 0;
@@ -162,6 +168,7 @@ export default function AllTradesPage() {
 
   const uniqueActivos = Array.from(new Set(trades.map(t => t.activo)));
   const uniqueSetups = Array.from(new Set(trades.map(t => t.setup)));
+  const uniqueCuentas = Array.from(new Set(trades.map(t => t.identificadorCuenta).filter(Boolean)));
 
   // Función para convertir URLs en enlaces clickeables
   const renderCommentsWithLinks = (text: string) => {
@@ -263,6 +270,17 @@ export default function AllTradesPage() {
               <option value="Won">Won</option>
               <option value="Lose">Lose</option>
               <option value="BE">BE</option>
+            </select>
+
+            <select
+              value={filterCuenta}
+              onChange={(e) => setFilterCuenta(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">Todas las cuentas</option>
+              {uniqueCuentas.map(cuenta => (
+                <option key={cuenta} value={cuenta}>{cuenta}</option>
+              ))}
             </select>
 
             <select
