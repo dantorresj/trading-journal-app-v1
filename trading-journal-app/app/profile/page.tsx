@@ -287,10 +287,11 @@ export default function ProfilePage() {
         <ShareBitacoraModal
           userId={user!.uid}
           displayName={userProfile.displayName || userProfile.email || 'Trader'}
-          trades={trades}
           onClose={() => setShowShareModal(false)}
         />
       )}
     </div>
   );
 }
+
+
