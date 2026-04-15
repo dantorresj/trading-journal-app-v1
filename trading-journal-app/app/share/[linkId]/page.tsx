@@ -13,7 +13,9 @@ import DashboardTables from '@/components/DashboardTables';
 interface ShareLinkData {
   userId: string;
   displayName: string;
+  type: 'todos' | 'estrategia' | 'cuenta';
   strategy: string | null;
+  cuenta: string | null;
   isActive: boolean;
 }
 
@@ -74,11 +76,13 @@ export default function SharedDashboardPage() {
 
         setLinkData(link);
 
-        // Cargar trades
+        // Cargar trades según tipo de link
         const tradesRef = collection(db, 'trades');
         let q;
-        if (link.strategy) {
+        if (link.type === 'estrategia' && link.strategy) {
           q = query(tradesRef, where('userId', '==', link.userId), where('setup', '==', link.strategy));
+        } else if (link.type === 'cuenta' && link.cuenta) {
+          q = query(tradesRef, where('userId', '==', link.userId), where('identificadorCuenta', '==', link.cuenta));
         } else {
           q = query(tradesRef, where('userId', '==', link.userId));
         }
@@ -146,6 +150,11 @@ export default function SharedDashboardPage() {
           {linkData?.strategy && (
             <p className="text-text-gray font-body">
               Estrategia: <span className="font-semibold text-gold-kint">{linkData.strategy}</span>
+            </p>
+          )}
+          {linkData?.cuenta && (
+            <p className="text-text-gray font-body">
+              Cuenta: <span className="font-semibold text-gold-kint">{linkData.cuenta}</span>
             </p>
           )}
           <div className="w-32 h-1 bg-gradient-gold mx-auto rounded-full mt-3" />

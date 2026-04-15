@@ -10,7 +10,9 @@ import SharedNavbar from '@/components/SharedNavbar';
 interface ShareLinkData {
   userId: string;
   displayName: string;
+  type: 'todos' | 'estrategia' | 'cuenta';
   strategy: string | null;
+  cuenta: string | null;
   isActive: boolean;
 }
 
@@ -36,8 +38,10 @@ export default function SharedProfilePage() {
 
         const tradesRef = collection(db, 'trades');
         let q;
-        if (link.strategy) {
+        if (link.type === 'estrategia' && link.strategy) {
           q = query(tradesRef, where('userId', '==', link.userId), where('setup', '==', link.strategy));
+        } else if (link.type === 'cuenta' && link.cuenta) {
+          q = query(tradesRef, where('userId', '==', link.userId), where('identificadorCuenta', '==', link.cuenta));
         } else {
           q = query(tradesRef, where('userId', '==', link.userId));
         }
@@ -124,6 +128,11 @@ export default function SharedProfilePage() {
           {linkData?.strategy && (
             <span className="inline-block bg-amber-50 text-gold-kint text-sm px-4 py-1 rounded-full border border-gold-kint font-body font-semibold mb-3">
               Estrategia: {linkData.strategy}
+            </span>
+          )}
+          {linkData?.cuenta && (
+            <span className="inline-block bg-amber-50 text-gold-kint text-sm px-4 py-1 rounded-full border border-gold-kint font-body font-semibold mb-3">
+              Cuenta: {linkData.cuenta}
             </span>
           )}
           {stats?.firstTrade && (
