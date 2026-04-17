@@ -197,6 +197,12 @@ export default function Dashboard() {
   const maxDrawdown = calculateMaxDrawdown(filteredTrades);
   const streaks = calculateStreaks(filteredTrades);
 
+  // Calcular R:R promedio
+  const tradesWithRR = filteredTrades.filter(t => t.rr !== undefined && t.rr !== null);
+  const avgRR = tradesWithRR.length > 0
+    ? tradesWithRR.reduce((sum, t) => sum + (t.rr as number), 0) / tradesWithRR.length
+    : null;
+
   const loadTrades = async () => {
     if (!user) return;
 
@@ -389,6 +395,26 @@ export default function Dashboard() {
               <p className="text-xs text-text-gray font-body text-center mt-4">
                 Máxima caída desde un pico hasta un valle antes de un nuevo máximo
               </p>
+            </div>
+
+            {/* R:R Promedio por Trade */}
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-silver">
+              <h3 className="text-xl font-heading font-semibold text-carbon mb-4">
+                ⚖️ R:R Promedio por Trade
+              </h3>
+              <div className="text-center">
+                <p className={`text-4xl font-bold font-mono ${
+                  avgRR === null ? 'text-text-gray' :
+                  avgRR >= 1 ? 'text-growth-jade' : 'text-lesson-red'
+                }`}>
+                  {avgRR === null ? '—' : avgRR.toFixed(2)}
+                </p>
+                <p className="text-xs text-text-gray font-body text-center mt-4">
+                  {avgRR === null
+                    ? 'No hay trades con R:R registrado'
+                    : `Promedio calculado sobre ${tradesWithRR.length} ${tradesWithRR.length === 1 ? 'trade' : 'trades'} con R:R registrado`}
+                </p>
+              </div>
             </div>
 
             {/* Rachas de Trades */}

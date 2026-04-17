@@ -21,6 +21,7 @@ export interface Trade {
   ganancia_perdida: number;
   comentarios?: string;
   imageUrl?: string;
+  rr?: number;
   createdAt: Date;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;

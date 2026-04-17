@@ -141,7 +141,7 @@ export default function AllTradesPage() {
   };
 
   const exportToCSV = () => {
-    const headers = ['Fecha', 'Activo', 'Setup', 'Dirección', 'Contratos', 'Puntos', 'Resultado', 'P&L', 'Comentarios'];
+    const headers = ['Fecha', 'Activo', 'Setup', 'Dirección', 'Contratos', 'Puntos', 'Resultado', 'P&L', 'R:R', 'Comentarios'];
     const csvData = filteredTrades.map(trade => [
       trade.fecha,
       trade.activo,
@@ -151,6 +151,7 @@ export default function AllTradesPage() {
       trade.puntos,
       trade.resultado,
       trade.ganancia_perdida,
+      trade.rr !== undefined && trade.rr !== null ? trade.rr : '',
       trade.comentarios || ''
     ]);
 
@@ -383,6 +384,14 @@ export default function AllTradesPage() {
                       <div>
                         <span className="font-semibold">Salida:</span> {trade.hora_salida}
                       </div>
+                      {trade.rr !== undefined && trade.rr !== null && (
+                        <div>
+                          <span className="font-semibold">R:R:</span>{' '}
+                          <span className={trade.rr < 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}>
+                            {trade.rr}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {trade.comentarios && (

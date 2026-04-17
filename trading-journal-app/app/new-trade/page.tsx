@@ -260,6 +260,18 @@ export default function NewTrade() {
       
       // Si es BE → mantener el valor tal como está
 
+      // Calcular R:R
+      const rrRaw = formData.get('rr') as string;
+      let rr: number | undefined = undefined;
+      if (resultado === 'Lose') {
+        rr = -1;
+      } else if (rrRaw && rrRaw.trim() !== '') {
+        const parsed = parseFloat(rrRaw);
+        if (!isNaN(parsed)) {
+          rr = parsed;
+        }
+      }
+
       const tradeData: Omit<Trade, 'id'> = {
         userId: user.uid,
         fecha: formData.get('fecha') as string,
@@ -281,6 +293,7 @@ export default function NewTrade() {
         resultado_especifico: formData.get('resultado_especifico') as string,
         comentarios: formData.get('comentarios') as string,
         imageUrl: imageUrl,
+        rr: rr,
         createdAt: new Date()
       };
 
@@ -634,6 +647,22 @@ removeImage();
                 placeholder="Ej: Me sentí confiado, esperé la confirmación en el balance. Respete mi stop loss."
                 className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
               />
+            </div>
+
+            {/* R:R (Ratio Riesgo/Beneficio) */}
+            <div>
+              <label className="block text-sm font-medium text-carbon mb-2 font-body">R:R (Ratio Riesgo/Beneficio)</label>
+              <input
+                type="number"
+                name="rr"
+                step="0.1"
+                min="0"
+                placeholder="Ej: 2 o 2.5"
+                className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"
+              />
+              <p className="text-xs text-text-gray mt-1 font-body">
+                Opcional. Si el resultado es Lose, se asignará automáticamente como -1.
+              </p>
             </div>
 
             {/* Imagen */}
