@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 interface UpgradeModalProps {
   show: boolean;
   onClose: () => void;
-  limitType: 'trades' | 'reflexiones' | 'images' | 'insights';
+  limitType: 'trades' | 'reflexiones' | 'images' | 'insights' | 'recordings';
   currentCount?: number;
   limit?: number;
 }
@@ -41,6 +41,11 @@ export default function UpgradeModal({
       title: '💎 Insights con IA Bloqueados',
       description: 'El análisis con Inteligencia Artificial es exclusivo para usuarios PRO.',
       icon: '🤖'
+    },
+    recordings: {
+      title: 'Grabaciones ilimitadas',
+      description: 'Con el plan gratuito puedes grabar 1 análisis en video. Actualiza a PRO para grabar sin límites y acceder al feed de la comunidad.',
+      icon: '🎬'
     }
   };
   

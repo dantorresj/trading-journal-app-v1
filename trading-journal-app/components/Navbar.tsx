@@ -70,6 +70,18 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
               Insights
             </Link>
 
+            {/* NUEVO LINK */}
+            <Link
+              href="/recordings"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+                isActive('/recordings')
+                  ? 'bg-gold-kint text-white'
+                  : 'text-carbon hover:text-gold-kint'
+              }`}
+            >
+              Recordings
+            </Link>
+
             <Link
               href="/reflexion"
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
@@ -114,7 +126,6 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
               Perfil
             </Link>
 
-            {/* Upgrade - solo para usuarios Free */}
             {userPlan === 'free' && (
               <Link
                 href="/upgrade"
@@ -125,7 +136,7 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
             )}
           </div>
 
-          {/* Right Side - Settings & Logout */}
+          {/* Right Side */}
           <div className="flex items-center space-x-2">
             <Link
               href="/settings"
@@ -191,6 +202,18 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
             Insights
           </Link>
 
+          {/* NUEVO LINK MOBILE */}
+          <Link
+            href="/recordings"
+            className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
+              isActive('/recordings')
+                ? 'bg-gold-kint text-white'
+                : 'text-carbon hover:text-gold-kint'
+            }`}
+          >
+            Recordings
+          </Link>
+
           <Link
             href="/reflexion"
             className={`block px-4 py-2 rounded-lg font-medium transition-colors duration-300 font-body ${
@@ -235,7 +258,6 @@ export default function Navbar({ onLogout, userPlan = 'free' }: NavbarProps) {
             Perfil
           </Link>
 
-          {/* Upgrade mobile - solo para usuarios Free */}
           {userPlan === 'free' && (
             <Link
               href="/upgrade"
