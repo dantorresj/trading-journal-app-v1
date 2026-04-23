@@ -655,7 +655,7 @@ removeImage();
               <input
                 type="number"
                 name="rr"
-                step="0.1"
+                step="0.01"
                 min="0"
                 placeholder="Ej: 2 o 2.5"
                 className="w-full px-4 py-3 border border-silver rounded-lg focus:ring-2 focus:ring-gold-kint focus:border-transparent font-body"

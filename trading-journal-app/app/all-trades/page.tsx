@@ -25,6 +25,8 @@ export default function AllTradesPage() {
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showExtensionModal, setShowExtensionModal] = useState(false);
+  const [extensionTrade, setExtensionTrade] = useState<Trade | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -422,6 +424,12 @@ export default function AllTradesPage() {
                      <span>Editar</span>
                     </button>
                     <button
+                      onClick={() => { setExtensionTrade(trade); setShowExtensionModal(true); }}
+                      className="flex items-center justify-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200"
+                    >
+                      <span>Grabar análisis</span>
+                    </button>
+                    <button
                      onClick={() => {
                       setSelectedTrade(trade);
                       setShowDeleteModal(true);
@@ -473,6 +481,50 @@ export default function AllTradesPage() {
           </div>
         </div>
       )}
+      {/* Modal informativo de extensión */}
+      {showExtensionModal && extensionTrade && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Nueva grabación</h3>
+              <button
+                onClick={() => { setShowExtensionModal(false); setExtensionTrade(null); }}
+                className="text-gray-400 hover:text-gray-700 text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-sm font-medium text-gray-900 mb-1">Trade seleccionado</p>
+                <p className="text-xs text-gray-500">{extensionTrade.activo} · {extensionTrade.fecha} · {extensionTrade.resultado}</p>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Para grabar un análisis usa la extensión <strong>KintEdge Recorder</strong> en Chrome. Puedes grabar directamente sobre TradingView, tu broker o cualquier video en el navegador, y dibujar encima mientras explicas.
+              </p>
+              <div className="bg-gray-900 rounded-xl p-4 space-y-3">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Cómo grabar</p>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p>1. Abre TradingView, tu broker o tu video en otra pestaña</p>
+                  <p>2. Presiona <kbd className="bg-gray-700 text-white px-2 py-0.5 rounded text-xs font-mono">Ctrl+Shift+R</kbd> para iniciar</p>
+                  <p>3. Usa <kbd className="bg-gray-700 text-white px-2 py-0.5 rounded text-xs font-mono">Ctrl+Shift+D</kbd> para alternar entre dibujar y navegar</p>
+                  <p>4. Al terminar el video aparece aquí automáticamente</p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 text-center">
+                ¿No tienes la extensión instalada? Contacta al soporte para obtenerla.
+              </p>
+            </div>
+            <button
+              onClick={() => { setShowExtensionModal(false); setExtensionTrade(null); }}
+              className="w-full mt-6 bg-gray-900 hover:bg-gray-700 text-white font-medium py-3 rounded-xl transition-colors text-sm"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
