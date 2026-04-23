@@ -78,16 +78,12 @@ export interface UserSettings {
 export interface TradingPlan {
   id?: string;
   userId: string;
-  // Límites diarios
   tradesMaxDiarios: number;
-  riesgoMaxPorTrade: number; // Porcentaje
-  perdidaMaxDiaria: number; // Dólares
+  riesgoMaxPorTrade: number;
+  perdidaMaxDiaria: number;
   pausaDespuesDePerdidas: number;
-  // Horarios permitidos
-  horariosPermitidos: string[]; // ["Pre-market", "Sesión NY", etc.]
-  // Reglas personalizadas
+  horariosPermitidos: string[];
   reglasPersonalizadas: string;
-  // Metadata
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,7 +96,7 @@ export interface Coupon {
   value: number;
   maxUses: number;
   usedCount: number;
-  usedBy: string[]; // Array de userIds
+  usedBy: string[];
   validFrom: Date;
   validUntil: Date | null;
   active: boolean;
@@ -135,6 +131,33 @@ export interface TradeStats {
   avgWin: number;
   avgLoss: number;
   expectedValue: number;
+}
+
+// 🔽 NUEVAS INTERFACES (grabaciones)
+
+export interface Recording {
+  id?: string;
+  userId: string;
+  userDisplayName: string;
+  tradeId?: string;
+  title: string;
+  description?: string;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  duration: number;
+  visibility: 'private' | 'public';
+  createdAt: Date;
+  views: number;
+  commentsEnabled: boolean;
+}
+
+export interface RecordingComment {
+  id?: string;
+  recordingId: string;
+  userId: string;
+  userDisplayName: string;
+  text: string;
+  createdAt: Date;
 }
 
 // Constantes de gamificación
@@ -213,8 +236,8 @@ export const XP_REWARDS = {
   TRADE_REGISTERED: 10,
   REFLEXION_WRITTEN: 15,
   WINNING_TRADE: 5,
-  STREAK_BONUS: 50, // Por 3 días consecutivos
-  HIGH_WINRATE: 100, // Win rate >60%
+  STREAK_BONUS: 50,
+  HIGH_WINRATE: 100,
   TRADING_PLAN_COMPLETED: 75
 };
 
