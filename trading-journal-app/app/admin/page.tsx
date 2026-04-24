@@ -94,7 +94,7 @@ export default function AdminPage() {
           <option value="todos">Todos los planes</option>
           <option value="free">Free</option>
           <option value="pro">Pro</option>
-          <option value="enterprise">Enterprise</option>
+          <option value="lifetime">Lifetime</option>
         </select>
       </div>
 
@@ -127,8 +127,8 @@ export default function AdminPage() {
                     style={{ padding: '4px 8px', borderRadius: '6px', border: '0.5px solid #ccc', fontSize: '13px' }}
                   >
                     <option value="free">Free</option>
-                    <option value="pro">Pro</option>
-                    <option value="enterprise">Enterprise</option>
+                   <option value="pro">Pro</option>
+                   <option value="lifetime">Lifetime</option>
                   </select>
                 </td>
                 <td style={{ padding: '12px' }}>
