@@ -12,7 +12,8 @@ interface TechnicalAnalysisProps {
     setupOptimo: {
       nombre: string;
       winRate: number;
-      pnlTotal: number;
+      pnlTotal?: number;
+      pnl?: number;
       profitFactor: number;
       trades: number;
       explicacion: string;
