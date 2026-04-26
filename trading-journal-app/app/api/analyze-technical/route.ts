@@ -135,13 +135,14 @@ Responde ÚNICAMENTE con este JSON válido:
       })
     });
 
-    if (!response.ok) {
-      console.error('Claude API error:', await response.text());
-      return NextResponse.json(
-        { error: 'Error al analizar con IA' },
-        { status: 500 }
-      );
-    }
+if (!response.ok) {
+  const errorDetail = await response.text();
+  console.error('Claude API error:', errorDetail);
+  return NextResponse.json(
+    { error: 'Error al analizar con IA', detail: errorDetail },
+    { status: 500 }
+  );
+}
 
     const data = await response.json();
     const content = data.content[0].text;
