@@ -96,13 +96,13 @@ export default function TechnicalAnalysis({ insights }: TechnicalAnalysisProps) 
               <div>
                 <p className="text-sm text-text-gray font-body mb-1">P&L Total</p>
                 <p className="text-3xl font-mono font-bold text-gold-kint">
-                  ${insights.setupOptimo.pnlTotal.toFixed(2)}
+                  ${(insights.setupOptimo.pnlTotal ?? insights.setupOptimo.pnl ?? 0).toFixed(2)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-text-gray font-body mb-1">Profit Factor</p>
                 <p className="text-3xl font-mono font-bold text-carbon">
-                  {insights.setupOptimo.profitFactor.toFixed(2)}
+                  {(insights.setupOptimo.profitFactor ?? 0).toFixed(2)}
                 </p>
               </div>
             </div>
