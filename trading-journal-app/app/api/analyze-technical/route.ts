@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { calcularMetricas } from '@/lib/calcularMetricas';
+import { Trade } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,25 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Preparar datos para Claude
-    const tradesData = trades.map((t: any) => ({
-      fecha: t.fecha,
-      activo: t.activo,
-      setup: t.setup,
-      horario: t.horario,
-      direccion: t.direccion,
-      resultado: t.resultado,
-      ganancia_perdida: t.ganancia_perdida,
-      hora_entrada: t.hora_entrada,
-      contratos: t.contratos
-    }));
+    // ── PRE-CALCULAR MÉTRICAS ──
+    const metricas = calcularMetricas(trades as Trade[]);
 
-    // Calcular estadísticas previas
-    const totalTrades = trades.length;
-    const winTrades = trades.filter((t: any) => t.resultado === 'Won').length;
-    const winRate = ((winTrades / totalTrades) * 100).toFixed(1);
-
-    // Llamar a Claude API
+    // ── LLAMAR A CLAUDE CON MÉTRICAS YA CALCULADAS ──
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -42,47 +29,108 @@ export async function POST(request: NextRequest) {
         max_tokens: 2000,
         messages: [{
           role: 'user',
-          content: `Eres un analista experto de trading. Analiza estos ${totalTrades} trades y proporciona insights ESPECÍFICOS Y ACCIONABLES basados ÚNICAMENTE en los datos proporcionados.
+          content: `Eres un coach experto de trading. A continuación tienes métricas YA CALCULADAS de un trader real. 
+Tu trabajo es interpretar estos números y dar feedback accionable y específico.
+NO inventes datos. USA SOLO los números que te doy.
 
-DATOS DE TRADES:
-${JSON.stringify(tradesData, null, 2)}
+═══════════════════════════════════════
+MÉTRICAS DEL TRADER
+═══════════════════════════════════════
 
-ESTADÍSTICAS GENERALES:
-- Total trades: ${totalTrades}
-- Win Rate: ${winRate}%
+RESUMEN GLOBAL:
+- Total trades: ${metricas.resumen.totalTrades}
+- Win Rate: ${metricas.resumen.winRate}%
+- Win Rate (con BE): ${metricas.resumen.winRateConBE}%
+- P&L Total: $${metricas.resumen.pnlTotal}
+- Profit Factor: ${metricas.resumen.profitFactor}
+- Avg Win: $${metricas.resumen.avgWin}
+- Avg Loss: $${metricas.resumen.avgLoss}
+- Expected Value: $${metricas.resumen.expectedValue}
+- R:R Promedio: ${metricas.resumen.rrPromedio ?? 'No disponible'}
 
-ANÁLISIS REQUERIDO (responde en JSON válido):
+WIN RATE POR DÍA DE SEMANA:
+${Object.entries(metricas.porDiaSemana)
+  .map(([dia, m]) => `- ${dia}: ${m.winRate}% (${m.trades} trades, P&L: $${m.pnl})`)
+  .join('\n')}
+
+MEJOR DÍA: ${metricas.mejorDia ? `${metricas.mejorDia.dia} (${metricas.mejorDia.winRate}%)` : 'Insuficientes datos'}
+PEOR DÍA: ${metricas.peorDia ? `${metricas.peorDia.dia} (${metricas.peorDia.winRate}%)` : 'Insuficientes datos'}
+
+RENDIMIENTO POR SETUP:
+${Object.entries(metricas.porSetup)
+  .map(([setup, m]) => `- ${setup}: WR ${m.winRate}%, uso ${m.frecuencia}% del tiempo, P&L $${m.pnl}, PF ${m.profitFactor}`)
+  .join('\n')}
+
+SETUP MÁS USADO: ${metricas.setupMasUsadoVsRentable?.masUsado ?? 'N/A'}
+SETUP MÁS RENTABLE: ${metricas.setupMasUsadoVsRentable?.masRentable ?? 'N/A'}
+¿SON EL MISMO?: ${metricas.setupMasUsadoVsRentable?.sonIguales ? 'Sí' : 'No'}
+
+RENDIMIENTO POR HORARIO:
+${Object.entries(metricas.porHorario)
+  .map(([h, m]) => `- ${h}: WR ${m.winRate}% (${m.trades} trades, P&L: $${m.pnl})`)
+  .join('\n')}
+
+RENDIMIENTO POR DIRECCIÓN:
+${Object.entries(metricas.porDireccion)
+  .map(([d, m]) => `- ${d}: WR ${m.winRate}% (${m.trades} trades, P&L: $${m.pnl})`)
+  .join('\n')}
+
+RENDIMIENTO POR ACTIVO:
+${Object.entries(metricas.porActivo)
+  .map(([a, m]) => `- ${a}: WR ${m.winRate}% (${m.trades} trades, P&L: $${m.pnl})`)
+  .join('\n')}
+
+EJECUCIÓN:
+- Cuando ejecutó bien (ejecute_bien=Si): WR ${metricas.porEjecucion.ejecutoBien.winRate}% (${metricas.porEjecucion.ejecutoBien.trades} trades, P&L: $${metricas.porEjecucion.ejecutoBien.pnl})
+- Cuando ejecutó mal (ejecute_bien=No): WR ${metricas.porEjecucion.ejecutoMal.winRate}% (${metricas.porEjecucion.ejecutoMal.trades} trades, P&L: $${metricas.porEjecucion.ejecutoMal.pnl})
+
+RACHAS DE PÉRDIDAS (análisis post ${metricas.rachas.rachaAnalizada} pérdidas consecutivas):
+- Trades después de racha: WR ${metricas.rachas.despuesDeRacha.winRate}% (${metricas.rachas.despuesDeRacha.trades} trades, P&L: $${metricas.rachas.despuesDeRacha.pnl})
+- Trades en condiciones normales: WR ${metricas.rachas.normal.winRate}% (${metricas.rachas.normal.trades} trades, P&L: $${metricas.rachas.normal.pnl})
+
+═══════════════════════════════════════
+INSTRUCCIONES DE ANÁLISIS
+═══════════════════════════════════════
+
+Responde ÚNICAMENTE con este JSON válido:
 
 {
   "mejorHorario": {
-    "sesion": "nombre de sesión con mejor win rate",
-    "horario": "rango horario específico (ej: 09:30-11:00)",
+    "sesion": "nombre del horario con mejor win rate o P&L",
     "winRate": número,
-    "trades": número de trades en ese horario,
-    "explicacion": "Por qué este horario es mejor (1-2 oraciones)"
+    "pnl": número,
+    "trades": número,
+    "explicacion": "Por qué este horario funciona mejor (1-2 oraciones con los números exactos)"
   },
   "setupOptimo": {
     "nombre": "nombre del setup más rentable",
     "winRate": número,
-    "pnlTotal": número,
+    "pnl": número,
+    "frecuencia": número (% de uso),
     "profitFactor": número,
-    "trades": número de trades con ese setup,
-    "explicacion": "Por qué este setup funciona mejor (1-2 oraciones)"
+    "explicacion": "Análisis del setup con comparativa si no es el más usado"
   },
   "patronDetectado": {
-    "titulo": "Título breve del patrón",
-    "descripcion": "Descripción del patrón encontrado (2-3 oraciones)",
-    "impacto": "Impacto en el rendimiento",
-    "recomendacion": "Acción específica a tomar (1-2 oraciones)"
+    "titulo": "Título breve del patrón más relevante encontrado",
+    "descripcion": "Descripción con números exactos del patrón (2-3 oraciones)",
+    "impacto": "Impacto cuantificado en P&L o win rate",
+    "recomendacion": "Acción concreta y específica que el trader debe tomar"
+  },
+  "alertas": [
+    {
+      "tipo": "oportunidad | riesgo",
+      "mensaje": "Insight específico con números (ej: Tu win rate los lunes es X% menor que el resto)"
+    }
+  ],
+  "resumenEjecucion": {
+    "diferenciaWinRate": número (diferencia en % entre ejecutoBien vs ejecutoMal),
+    "mensaje": "Análisis de cómo la ejecución afecta los resultados con números exactos"
+  },
+  "rachas": {
+    "hayPatron": boolean,
+    "mensaje": "Análisis de si el trader opera peor después de rachas de pérdidas, con números"
   }
-}
-
-IMPORTANTE:
-- Basa TODO en los datos proporcionados, no inventes
-- Sé específico con números y porcentajes
-- Las recomendaciones deben ser ACCIONABLES
-- Si un patrón no es claro, menciona "necesitas más datos"
-- Responde SOLO con el JSON, sin texto adicional`
+}`
         }]
       })
     });
@@ -97,11 +145,11 @@ IMPORTANTE:
 
     const data = await response.json();
     const content = data.content[0].text;
-    
-    // Parsear respuesta JSON de Claude
+
     const insights = JSON.parse(content);
 
-    return NextResponse.json(insights);
+    // Adjuntar métricas crudas por si el frontend las necesita
+    return NextResponse.json({ ...insights, _metricas: metricas });
 
   } catch (error: any) {
     console.error('Error in technical analysis:', error);
