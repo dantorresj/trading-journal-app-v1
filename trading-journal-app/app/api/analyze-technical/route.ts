@@ -147,7 +147,8 @@ if (!response.ok) {
     const data = await response.json();
     const content = data.content[0].text;
 
-    const insights = JSON.parse(content);
+    const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+const insights = JSON.parse(cleaned);
 
     // Adjuntar métricas crudas por si el frontend las necesita
     return NextResponse.json({ ...insights, _metricas: metricas });
